@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: FolioFlex
+
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.yaml
+
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: 76cc5b64379b7e
+    password: 5ef7cf5224a202
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+app:
+  base:
+    url: http://localhost:8081
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+
+server:
+  port: 8081
+
