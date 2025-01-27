@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (refreshHeader != null) {
                 handleRefreshToken(refreshHeader, response);
-                return; // Stop further processing to avoid duplicate filter execution
+                return;
             }
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {

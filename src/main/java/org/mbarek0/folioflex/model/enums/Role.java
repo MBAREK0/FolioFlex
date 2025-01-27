@@ -13,10 +13,6 @@ import java.util.stream.Collectors;
 public enum Role {
     USER(
             Set.of(
-                    PORTFOLIO_OWNER_CREATE_PORTFOLIO,
-                    PORTFOLIO_OWNER_VIEW_PORTFOLIO,
-                    PORTFOLIO_OWNER_EDIT_PORTFOLIO,
-                    PORTFOLIO_OWNER_DELETE_PORTFOLIO,
                     PORTFOLIO_OWNER_PREVIEW_PORTFOLIO,
                     PORTFOLIO_OWNER_MANAGE_PERSONAL_INFO,
                     PORTFOLIO_OWNER_MANAGE_PROJECTS,
@@ -45,7 +41,11 @@ public enum Role {
                     ADMIN_ADD_TEMPLATE,
                     ADMIN_EDIT_TEMPLATE,
                     ADMIN_DELETE_TEMPLATE,
-                    ADMIN_SET_TEMPLATE_PRICING
+                    ADMIN_SET_TEMPLATE_PRICING,
+                    ADMIN_CREATE_PORTFOLIO,
+                    ADMIN_VIEW_PORTFOLIO,
+                    ADMIN_EDIT_PORTFOLIO,
+                    ADMIN_DELETE_PORTFOLIO
             )
     );
 

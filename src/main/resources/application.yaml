@@ -2,6 +2,10 @@ spring:
   application:
     name: FolioFlex
 
+  docker:
+    compose:
+      enabled: false
+
   config:
     import: optional:file:.env[.properties]
 
@@ -26,10 +30,10 @@ spring:
     change-log: classpath:db/changelog/master.yaml
 
   mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: 76cc5b64379b7e
-    password: 5ef7cf5224a202
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -40,7 +44,10 @@ spring:
 
 app:
   base:
-    url: http://localhost:8081
+    url: ${APP_URL}
+  frontend:
+    url: ${APP_FRONT_URL}
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}

@@ -1,6 +1,5 @@
 package org.mbarek0.folioflex.service.authentication;
 
-
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -63,8 +63,12 @@ public class AuthenticationService {
 
 
     public TokenVM login(String username, String password) {
-        return userRepository.findByUsernameAndDeletedFalse(username)
-                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+
+        Optional<User> opUser;
+        if (isEmail(username)) opUser = userRepository.findByEmailAndDeletedFalse(username);
+        else opUser = userRepository.findByUsernameAndDeletedFalse(username);
+
+        return opUser.filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .map(authenticatedUser -> {
 
                     String authToken = jwtService.generateToken(authenticatedUser.getUsername());
@@ -105,12 +109,17 @@ public class AuthenticationService {
         return token;
     }
 
-    public void verifyEmail(String token) {
+    public boolean verifyEmail(String token) {
         User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid verification token."));
 
         user.setVerified(true);
         user.setVerificationToken(null);
         userRepository.save(user);
+        return true;
+    }
+
+    private boolean isEmail(String input) {
+        return input != null && input.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 }

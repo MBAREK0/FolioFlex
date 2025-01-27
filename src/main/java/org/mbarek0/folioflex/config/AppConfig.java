@@ -23,8 +23,8 @@ public class AppConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder()); // Call the bean method
-        provider.setUserDetailsService(customUserDetailsService); // Inject the custom user details service
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(customUserDetailsService);
         return provider;
     }
 }

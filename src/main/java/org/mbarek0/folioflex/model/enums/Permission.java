@@ -2,10 +2,7 @@ package org.mbarek0.folioflex.model.enums;
 
 public enum Permission {
     // Portfolio Owner Permissions
-    PORTFOLIO_OWNER_CREATE_PORTFOLIO("portfolio_owner:create_portfolio"),
-    PORTFOLIO_OWNER_VIEW_PORTFOLIO("portfolio_owner:view_portfolio"),
-    PORTFOLIO_OWNER_EDIT_PORTFOLIO("portfolio_owner:edit_portfolio"),
-    PORTFOLIO_OWNER_DELETE_PORTFOLIO("portfolio_owner:delete_portfolio"),
+
     PORTFOLIO_OWNER_PREVIEW_PORTFOLIO("portfolio_owner:preview_portfolio"),
     PORTFOLIO_OWNER_MANAGE_PERSONAL_INFO("portfolio_owner:manage_personal_info"),
     PORTFOLIO_OWNER_MANAGE_PROJECTS("portfolio_owner:manage_projects"),
@@ -25,6 +22,10 @@ public enum Permission {
     PORTFOLIO_OWNER_CONNECT_CUSTOM_DOMAIN("portfolio_owner:connect_custom_domain"),
 
     // Admin Permissions
+    ADMIN_CREATE_PORTFOLIO("portfolio_owner:create_portfolio"),
+    ADMIN_VIEW_PORTFOLIO("portfolio_owner:view_portfolio"),
+    ADMIN_EDIT_PORTFOLIO("portfolio_owner:edit_portfolio"),
+    ADMIN_DELETE_PORTFOLIO("portfolio_owner:delete_portfolio"),
     ADMIN_VIEW_USERS("admin:view_users"),
     ADMIN_MANAGE_USERS("admin:manage_users"),
     ADMIN_VIEW_STATISTICS("admin:view_statistics"),

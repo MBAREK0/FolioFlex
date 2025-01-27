@@ -8,18 +8,24 @@ import org.mbarek0.folioflex.service.authentication.JwtService;
 import org.mbarek0.folioflex.web.vm.request.LoginFormVM;
 import org.mbarek0.folioflex.web.vm.request.RegisterVM;
 import org.mbarek0.folioflex.web.vm.response.TokenVM;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final JwtService jwtService;
+    private final String frontendUrl;
 
+    public AuthenticationController(AuthenticationService authenticationService, @Value("${app.frontend.url}") String frontendUrl) {
+        this.authenticationService = authenticationService;
+//        this.frontendUrl = frontendUrl + "/verify-success";
+        this.frontendUrl = frontendUrl ;
+    }
 
 
     @PostMapping("/register")
@@ -39,8 +45,17 @@ public class AuthenticationController {
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
-        authenticationService.verifyEmail(token);
-        return ResponseEntity.ok("Email verified successfully.");
+       boolean isVerified =  authenticationService.verifyEmail(token);
+
+        if (isVerified) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, frontendUrl)
+                    .build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, frontendUrl)
+                    .build();
+        }
     }
 
     @PostMapping("/refresh")
