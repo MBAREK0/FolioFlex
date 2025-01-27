@@ -41,12 +41,14 @@ spring:
           starttls:
             enable: true
 
-
-app:
-  base:
-    url: ${APP_URL}
-  frontend:
-    url: ${APP_FRONT_URL}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
 
 jwt:
   secret:
@@ -60,4 +62,3 @@ logging:
 
 server:
   port: 8081
-
