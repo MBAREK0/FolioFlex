@@ -29,7 +29,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configure(http))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register","/api/auth/verify").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/verify",
+                                "/api/auth/forgot-password",
+                                "api/auth//reset-password"
+                                ).permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
 

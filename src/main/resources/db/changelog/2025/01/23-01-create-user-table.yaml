@@ -51,6 +51,17 @@ databaseChangeLog:
                     nullable: true
                     unique: true
               - column:
+                  name: password_reset_token
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+                    unique: true
+              - column:
+                  name: password_reset_token_expiry
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
                   name: deleted
                   type: BOOLEAN
                   defaultValueBoolean: false

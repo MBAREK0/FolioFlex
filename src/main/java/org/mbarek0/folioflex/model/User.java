@@ -39,13 +39,15 @@ public class User implements UserDetails {
 
     private String verificationToken;
 
+    private String passwordResetToken;
+
+    private LocalDateTime passwordResetTokenExpiry;
+
     private boolean deleted = false;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-
 
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,6 +1,7 @@
 package org.mbarek0.folioflex.web.controller;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mbarek0.folioflex.service.authentication.AuthenticationService;
@@ -19,18 +20,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final String frontendUrl;
 
-    public AuthenticationController(AuthenticationService authenticationService, @Value("${app.frontend.url}") String frontendUrl) {
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-//        this.frontendUrl = frontendUrl + "/verify-success";
-        this.frontendUrl = frontendUrl ;
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<TokenVM> register(@RequestBody @Valid RegisterVM userDTO) {
-        return ResponseEntity.ok(authenticationService.register(userDTO));
+    public ResponseEntity<TokenVM> register(@RequestBody @Valid RegisterVM userDTO,HttpServletRequest request) {
+
+        String clientOrigin = request.getHeader(HttpHeaders.ORIGIN);
+        if (clientOrigin == null) {
+            clientOrigin = request.getHeader(HttpHeaders.REFERER);
+        }
+        return ResponseEntity.ok(authenticationService.register(userDTO, clientOrigin));
     }
 
     @PostMapping("/login")
@@ -45,17 +48,29 @@ public class AuthenticationController {
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
-       boolean isVerified =  authenticationService.verifyEmail(token);
 
-        if (isVerified) {
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header(HttpHeaders.LOCATION, frontendUrl)
-                    .build();
-        } else {
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header(HttpHeaders.LOCATION, frontendUrl)
-                    .build();
+        authenticationService.verifyEmail(token);
+
+        return ResponseEntity.ok(" Email verified seccessfully");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email, HttpServletRequest request) {
+        String clientOrigin = request.getHeader(HttpHeaders.ORIGIN);
+        if (clientOrigin == null) {
+            clientOrigin = request.getHeader(HttpHeaders.REFERER);
         }
+        authenticationService.forgotPassword(email,clientOrigin);
+        return ResponseEntity.ok("Password reset email sent.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword) {
+       authenticationService.resetPassword(token, newPassword);
+
+        return ResponseEntity.ok("Password reset successfully.");
     }
 
     @PostMapping("/refresh")

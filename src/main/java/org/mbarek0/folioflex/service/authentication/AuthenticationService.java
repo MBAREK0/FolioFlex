@@ -8,6 +8,7 @@ import org.mbarek0.folioflex.model.enums.Role;
 import org.mbarek0.folioflex.repository.UserRepository;
 import org.mbarek0.folioflex.service.UserService;
 import org.mbarek0.folioflex.web.exception.user.UserNameAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.user.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.user.UsernameOrPasswordInvalidException;
 import org.mbarek0.folioflex.web.vm.mapper.UserVMMapper;
 import org.mbarek0.folioflex.web.vm.request.RegisterVM;
@@ -30,7 +31,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public TokenVM register(@Valid RegisterVM registerVM) {
+    public TokenVM register(@Valid RegisterVM registerVM, String clientOrigin) {
 
         userService.findByUsername(registerVM.getUsername())
                 .ifPresent(existingUser -> {
@@ -56,7 +57,7 @@ public class AuthenticationService {
         String authToken = jwtService.generateToken(savedUser.getUsername());
         String refreshToken = jwtService.generateRefreshToken(savedUser.getUsername());
 
-        emailService.sendVerificationEmail(newUser.getEmail(), newUser.getVerificationToken());
+        emailService.sendVerificationEmail(newUser.getEmail(), newUser.getVerificationToken(), clientOrigin);
 
         return TokenVM.builder().token(authToken).refreshToken(refreshToken).build();
     }
@@ -99,6 +100,46 @@ public class AuthenticationService {
         return new TokenVM(newAccessToken, refreshToken);
     }
 
+
+
+    public void verifyEmail(String token) {
+        User user = userRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid verification token."));
+
+        user.setVerified(true);
+        user.setVerificationToken(null);
+        userRepository.save(user);
+
+    }
+
+    public void forgotPassword(String email, String clientOrigin) {
+        User user = userRepository.findByEmailAndDeletedFalse(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        String resetToken = generatePasswordResetToken();
+        user.setPasswordResetToken(resetToken);
+        user.setPasswordResetTokenExpiry(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        emailService.sendPasswordResetEmail(user.getEmail(), resetToken,clientOrigin);
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        User user = userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid password reset token."));
+
+        if (user.getPasswordResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Password reset token has expired.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiry(null);
+        userRepository.save(user);
+
+    }
+//--------------------------- helper methods ------------------------------
+
     public String generateVerificationToken() {
         String token = UUID.randomUUID().toString();
 
@@ -109,14 +150,14 @@ public class AuthenticationService {
         return token;
     }
 
-    public boolean verifyEmail(String token) {
-        User user = userRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid verification token."));
+    public String generatePasswordResetToken() {
+        String token = UUID.randomUUID().toString();
 
-        user.setVerified(true);
-        user.setVerificationToken(null);
-        userRepository.save(user);
-        return true;
+        List<User>  user = userRepository.findAllByPasswordResetToken(token);
+
+        if(!user.isEmpty()) return generatePasswordResetToken();
+
+        return token;
     }
 
     private boolean isEmail(String input) {
