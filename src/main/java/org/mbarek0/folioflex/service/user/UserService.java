@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.service;
+package org.mbarek0.folioflex.service.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

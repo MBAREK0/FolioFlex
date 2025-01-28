@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.enums.Role;
 import org.mbarek0.folioflex.repository.UserRepository;
-import org.mbarek0.folioflex.service.UserService;
+import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.user.UserNameAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.user.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.user.UsernameOrPasswordInvalidException;

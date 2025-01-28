@@ -50,10 +50,14 @@ springdoc:
     enabled: true
     path: /v3/api-docs
 
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
-
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL}
 logging:
   level:
     org:

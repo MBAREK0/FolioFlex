@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.service;
+package org.mbarek0.folioflex.service.user;
 
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.UserRepository;
