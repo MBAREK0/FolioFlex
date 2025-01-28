@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
        file: db/changelog/2025/01/23-01-create-user-table.yaml
+  - include:
+       file: db/changelog/2025/01/28-01-create-language-table.yaml
+  - include:
+       file: db/changelog/2025/01/28-02-load-the-csv-data-into-the-languages-table.yaml

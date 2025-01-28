@@ -68,7 +68,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-//-------- Verify user email ------------------------------------------------------------------------------------------
+//-------- Verify user email -------------------------------------------------------------------------------------------
     @GetMapping("/verify")
     @Operation(
             summary = "Verify user email",
@@ -85,7 +85,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(" Email verified seccessfully");
     }
 
-//-------- Request password reset ------------------------------------------------------------------------------------------
+//-------- Request password reset --------------------------------------------------------------------------------------
     @PostMapping("/forgot-password")
     @Operation(
             summary = "Request password reset",

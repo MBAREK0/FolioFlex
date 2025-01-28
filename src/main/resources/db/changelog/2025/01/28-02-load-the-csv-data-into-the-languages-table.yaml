@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1738075836-load-data-into-languages-table
+      author: MBAREK0
+      changes:
+        - loadData:
+            tableName: languages
+            file: ../../data/language-codes.csv
+            separator: ","
+            quotchar: '"'
+            usePreparedStatements: true
+            relativeToChangelogFile: true
+            columns:
+              - column:
+                  name: code
+                  type: STRING
+              - column:
+                  name: language
+                  type: STRING1738075836
