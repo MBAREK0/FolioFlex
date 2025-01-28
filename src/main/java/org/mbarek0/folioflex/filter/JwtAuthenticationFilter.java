@@ -6,7 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.mbarek0.folioflex.service.CustomUserDetailsService;
+import org.mbarek0.folioflex.service.user.CustomUserDetailsService;
 import org.mbarek0.folioflex.service.authentication.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

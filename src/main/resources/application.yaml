@@ -41,17 +41,23 @@ spring:
           starttls:
             enable: true
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
 
-app:
-  base:
-    url: ${APP_URL}
-  frontend:
-    url: ${APP_FRONT_URL}
 
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
-
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL}
 logging:
   level:
     org:
@@ -60,4 +66,3 @@ logging:
 
 server:
   port: 8081
-

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1738074826-create-language-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: languages
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: code
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 1738074826-create-index-language-code
+      author: MBAREK0
+      changes:
+        - createIndex:
+            tableName: languages
+            indexName: idx_languages_code
+            columns:
+              - column:
+                  name: code
