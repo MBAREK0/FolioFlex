@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1738075836- add-unique-primary-language-per-user
+      author: MBAREK0
+      changes:
+        - sql:
+            sql: |
+              CREATE UNIQUE INDEX idx_unique_primary_language_per_user
+              ON portfolio_translation_languages (user_id)
+              WHERE is_primary = TRUE
+            dbms: postgresql

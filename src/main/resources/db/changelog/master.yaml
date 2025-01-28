@@ -5,3 +5,7 @@ databaseChangeLog:
        file: db/changelog/2025/01/28-01-create-language-table.yaml
   - include:
        file: db/changelog/2025/01/28-02-load-the-csv-data-into-the-languages-table.yaml
+  - include:
+       file: db/changelog/2025/01/28-03-create-portfolio_translation_languages-table.yaml
+  - include:
+       file: db/changelog/2025/01/28-04-add-unique-primary-language-per-user.yaml

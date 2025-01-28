@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1738075836-create-portfolio_translation_languages-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: portfolio_translation_languages
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: language_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_primary
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: portfolio_translation_languages
+            baseColumnNames: language_id
+            referencedTableName: languages
+            referencedColumnNames: id
+            constraintName: fk_portfolio_translation_language_lang
+            validate: true
+
+        - addForeignKeyConstraint:
+            baseTableName: portfolio_translation_languages
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_portfolio_translation_language_user
+            validate: true
