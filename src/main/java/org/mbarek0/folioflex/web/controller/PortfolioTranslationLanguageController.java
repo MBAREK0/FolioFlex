@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
+import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.service.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.web.vm.mapper.PortfolioTranslationLanguageMapper;
 import org.mbarek0.folioflex.web.vm.request.CreatePortfolioTranslationLanguageVM;
@@ -51,6 +51,24 @@ public class PortfolioTranslationLanguageController {
     }
 
 
+    // GET: Retrieve All portfolio translation languages
+    @GetMapping
+    @Operation(
+            summary = "Retrieve all portfolio translation languages",
+            description = "Returns a list of all portfolio translation languages",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved portfolio translation languages"),
+                    @ApiResponse(responseCode = "404", description = "Portfolio translation languages not found")
+            }
+    )
+    public ResponseEntity<List<Language>> getPortfolioTranslationLanguageById( ) {
+
+        List<Language> languages = portfolioTranslationLanguageService.getAllPortfolioTranslationLanguage();
+        return ResponseEntity.ok(languages);
+
+    }
+
+
     // GET: Retrieve all portfolio translation languages for a user
     @GetMapping("/user/{userId}")
     @Operation(
@@ -78,54 +96,8 @@ public class PortfolioTranslationLanguageController {
 
     }
 
-    // GET: Retrieve a specific portfolio translation language by ID
-    @GetMapping("/{id}")
-    @Operation(
-            summary = "Retrieve a specific portfolio translation language by ID",
-            description = "Returns the details of a specific portfolio translation language",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Successfully retrieved portfolio translation language"),
-                    @ApiResponse(responseCode = "404", description = "Portfolio translation language not found")
-            }
-    )
-    public ResponseEntity<String> getPortfolioTranslationLanguageById(
-            @Parameter(
-                    name = "id",
-                    description = "Portfolio translation language ID",
-                    required = true,
-                    example = "1"
-            )
-            @PathVariable String id) {
-
-        // Logic to retrieve a specific portfolio translation language by ID
-        return ResponseEntity.ok("Retrieved portfolio translation language with ID: " + id);
-    }
-
-    // PUT: Delete a portfolio translation language
-    @PutMapping("/delete")
-    @Operation(
-            summary = "Delete a portfolio translation language",
-            description = "Deletes a specific portfolio translation language",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Portfolio translation language deleted successfully"),
-                    @ApiResponse(responseCode = "404", description = "Portfolio translation language not found")
-            }
-    )
-    public ResponseEntity<String> deletePortfolioTranslationLanguage(
-            @Parameter(
-                    name = "id",
-                    description = "Portfolio translation language ID",
-                    required = true,
-                    example = "1"
-            )
-            @RequestParam String id) {
-
-        // Logic to delete a portfolio translation language
-        return ResponseEntity.ok("Deleted portfolio translation language with ID: " + id);
-    }
-
     // PUT: Add a single portfolio translation language
-    @PutMapping("/add")
+    @PostMapping("/add")
     @Operation(
             summary = "Add a single portfolio translation language",
             description = "Adds a new portfolio translation language for a user",
@@ -136,22 +108,87 @@ public class PortfolioTranslationLanguageController {
     )
     public ResponseEntity<String> addPortfolioTranslationLanguage(
             @Parameter(
-                    name = "user",
+                    name = "userId",
                     description = "User ID",
                     required = true,
                     example = "1234"
             )
-            @RequestParam String user,
+            @RequestParam Long userId,
 
             @Parameter(
-                    name = "language",
+                    name = "languageId",
                     description = "Language ID",
                     required = true,
                     example = "1"
             )
-            @RequestParam String language) {
+            @RequestParam Long languageId) {
 
-        // Logic to add a single portfolio translation language
-        return ResponseEntity.ok("Added portfolio translation language for user: " + user + ", language: " + language);
+        portfolioTranslationLanguageService.save(userId, languageId);
+        return ResponseEntity.ok("Portfolio translation language added successfully");
     }
+
+
+    // PUT: update isPrimary field of a portfolio translation language
+    @PutMapping("/primary")
+    @Operation(
+            summary = "Update isPrimary field of a portfolio translation language",
+            description = "Updates the isPrimary field of a portfolio translation language",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Portfolio translation language updated successfully"),
+                    @ApiResponse(responseCode = "404", description = "Portfolio translation language not found")
+            }
+    )
+    public ResponseEntity<String> updatePortfolioTranslationLanguagePrimary(
+            @Parameter(
+                    name = "userId",
+                    description = "User ID",
+                    required = true,
+                    example = "1234"
+            )
+            @RequestParam Long userId,
+
+            @Parameter(
+                    name = "languageId",
+                    description = "Language ID",
+                    required = true,
+                    example = "1"
+            )
+            @RequestParam Long languageId) {
+
+        portfolioTranslationLanguageService.updatePortfolioTranslationLanguagePrimary(userId, languageId);
+        return ResponseEntity.ok("Portfolio translation language updated successfully");
+    }
+
+    // PUT: Delete a portfolio translation language
+    @DeleteMapping
+    @Operation(
+            summary = "Delete a portfolio translation language",
+            description = "Deletes a specific portfolio translation language",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Portfolio translation language deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Portfolio translation language not found")
+            }
+    )
+    public ResponseEntity<String> deletePortfolioTranslationLanguage(
+            @Parameter(
+                    name = "userId",
+                    description = "User ID",
+                    required = true,
+                    example = "1234"
+            )
+            @RequestParam Long userId,
+
+            @Parameter(
+                    name = "languageId",
+                    description = "Language ID",
+                    required = true,
+                    example = "1"
+            )
+            @RequestParam Long languageId) {
+
+        portfolioTranslationLanguageService.deletePortfolioTranslationLanguage(userId, languageId);
+        return ResponseEntity.ok("Portfolio translation language deleted successfully");
+    }
+
+
 }

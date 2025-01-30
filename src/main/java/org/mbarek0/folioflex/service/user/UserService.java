@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.UserRepository;
-import org.mbarek0.folioflex.web.exception.user.UserNotFoundException;
+import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

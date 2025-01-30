@@ -8,8 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.enums.Role;
 import org.mbarek0.folioflex.service.user.UserService;
-import org.mbarek0.folioflex.web.exception.user.RooleNotFoundException;
-import org.mbarek0.folioflex.web.exception.user.UserNotFoundException;
+import org.mbarek0.folioflex.web.exception.userExs.RooleNotFoundException;
+import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

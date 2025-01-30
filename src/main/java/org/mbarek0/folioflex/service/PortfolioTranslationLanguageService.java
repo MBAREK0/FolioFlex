@@ -7,7 +7,13 @@ import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.LanguageRepository;
 import org.mbarek0.folioflex.repository.PortfolioTranslationLanguageRepository;
 import org.mbarek0.folioflex.service.user.UserService;
+import org.mbarek0.folioflex.web.exception.InvalidInputException;
+import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
+import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
+import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.CreatePortfolioTranslationLanguageVM;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,13 +31,17 @@ public class PortfolioTranslationLanguageService {
     private final UserService userService;
 
     public List<PortfolioTranslationLanguage> save(List<CreatePortfolioTranslationLanguageVM> createPortfolioTranslationLanguageVMs) {
+
         if (createPortfolioTranslationLanguageVMs == null) {
-            throw new IllegalArgumentException("createPortfolioTranslationLanguageVMs is null");
+            throw new InvalidInputException("createPortfolioTranslationLanguageVMs is null");
         }
 
+        if (portfolioTranslationLanguageRepository.findAll().toArray().length > 0) {
+            throw new InvalidInputException("Portfolio translation languages already exist try to insert one by one");
+        }
         List<Language> languages = createPortfolioTranslationLanguageVMs.stream()
                 .map(vm -> languageRepository.findById(vm.getLanguageId())
-                        .orElseThrow(() -> new IllegalArgumentException("Language not found with ID: " + vm.getLanguageId())))
+                        .orElseThrow(() -> new LanguageNotFoundException(vm.getLanguageId())))
                 .collect(Collectors.toList());
 
         boolean isEnglishInList = languages.stream()
@@ -39,7 +49,7 @@ public class PortfolioTranslationLanguageService {
 
         if (!isEnglishInList) {
             Language englishLanguage = languageRepository.findByCode("en")
-                    .orElseThrow(() -> new IllegalArgumentException("English language not found in the database"));
+                    .orElseThrow(EnglishLanguageNotFoundException::new);
 
             languages.add(englishLanguage);
 
@@ -51,11 +61,10 @@ public class PortfolioTranslationLanguageService {
 
         return createPortfolioTranslationLanguageVMs.stream()
                 .map(vm -> {
-                    // Find the language by ID
                     Language language = languages.stream()
                             .filter(l -> Objects.equals(l.getId(), vm.getLanguageId()))
                             .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Language not found with ID: " + vm.getLanguageId()));
+                            .orElseThrow(() -> new LanguageNotFoundException(vm.getLanguageId()));
 
                     User user = userService.findUserById(vm.getUserId());
 
@@ -72,16 +81,68 @@ public class PortfolioTranslationLanguageService {
                 .collect(Collectors.toList());
     }
 
-
-    public List<PortfolioTranslationLanguage> getAllPortfolioTranslationLanguagesForUser(Long userId) {
-        // Check if the user exists
+    public PortfolioTranslationLanguage save(Long userId, Long languageId) {
         if (!userService.existsById(userId)) {
-            throw new IllegalArgumentException("User not found with ID: " + userId);
+            throw new UserNotFoundException("User with ID: " + userId + " not found");
         }
 
         User user = userService.findUserById(userId);
 
-        // Fetch all portfolio translation languages for the user
+        Language language = languageRepository.findById(languageId)
+                .orElseThrow(() -> new LanguageNotFoundException(languageId));
+
+        if (portfolioTranslationLanguageRepository.existsByLanguageAndUser(language, user)) {
+            throw new PortfolioTranslationLanguageAlreadyExistsException(userId);
+        }
+
+        PortfolioTranslationLanguage pTL = PortfolioTranslationLanguage.builder()
+                .language(language)
+                .user(user)
+                .isPrimary(false)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        return portfolioTranslationLanguageRepository.save(pTL);
+    }
+
+    public List<PortfolioTranslationLanguage> getAllPortfolioTranslationLanguagesForUser(Long userId) {
+        if (!userService.existsById(userId)) {
+            throw new UserNotFoundException("User with ID: " + userId + " not found");
+        }
+
+        User user = userService.findUserById(userId);
+
         return portfolioTranslationLanguageRepository.findByUser(user);
+    }
+
+    public List<Language> getAllPortfolioTranslationLanguage() {
+        return languageRepository.findAll();
+    }
+
+    public PortfolioTranslationLanguage updatePortfolioTranslationLanguagePrimary(Long userId, Long languageId) {
+        User user = userService.findUserById(userId);
+        Language language = languageRepository.findById(languageId)
+                .orElseThrow(() -> new LanguageNotFoundException(languageId));
+
+        PortfolioTranslationLanguage pTL = portfolioTranslationLanguageRepository
+                .findByUserAndLanguage(user, language);
+
+        if (pTL == null) {
+            throw new InvalidInputException("Portfolio translation language not found for user with ID: " + userId + " and language ID: " + languageId);
+        }
+
+        PortfolioTranslationLanguage pTLPrimary = portfolioTranslationLanguageRepository.findByisPrimary(true);
+        if (pTLPrimary != null) {
+            pTLPrimary.setPrimary(false);
+            portfolioTranslationLanguageRepository.save(pTLPrimary);
+        }
+
+        pTL.setPrimary(true);
+        return portfolioTranslationLanguageRepository.save(pTL);
+    }
+
+    public void deletePortfolioTranslationLanguage(Long userId, Long languageId) {
+        //TODO: Implement this method
     }
 }
