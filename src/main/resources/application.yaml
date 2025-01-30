@@ -57,7 +57,7 @@ jwt:
 gemini:
   api:
     key: ${GEMINI_API_KEY}
-    url: ${GEMINI_API_URL}
+    url: ${PRO_GEMINI_API_URL}
 logging:
   level:
     org:

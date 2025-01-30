@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class PortfolioTranslationLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "language_id")

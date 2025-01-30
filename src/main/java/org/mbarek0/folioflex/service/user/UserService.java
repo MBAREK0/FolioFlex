@@ -31,6 +31,7 @@ public class UserService {
     }
 
 
+
     public Page<User> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
@@ -52,19 +53,24 @@ public class UserService {
         return userRepository.findByEmailAndDeletedFalse(email);
     }
 
-    public User findUserById(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID cannot be null");
+    public User findUserById(Long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Id cannot be less than or equal to 0");
         }
-
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
+    public boolean existsById(Long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Id cannot be less than or equal to 0");
+        }
+        return userRepository.existsById(id);
+    }
 
 
     @Transactional
-    public boolean markUserAsDeleted(UUID userId) {
+    public boolean markUserAsDeleted(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setDeleted(true);
