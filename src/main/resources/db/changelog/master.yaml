@@ -9,3 +9,5 @@ databaseChangeLog:
        file: db/changelog/2025/01/28-03-create-portfolio_translation_languages-table.yaml
   - include:
        file: db/changelog/2025/01/28-04-add-unique-primary-language-per-user.yaml
+  - include:
+      file: db/changelog/2025/01/31-01-create-personal_information-table.yaml

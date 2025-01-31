@@ -1,19 +1,19 @@
-package org.mbarek0.folioflex.service.authentication;
+package org.mbarek0.folioflex.service.email.impl;
 
-import lombok.AllArgsConstructor;
+import org.mbarek0.folioflex.service.email.EmailService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 @Service
-public class EmailService {
+public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
+    @Override
     public void sendVerificationEmail(String email, String verificationToken,String clientOrigin) {
         String verificationUrl = clientOrigin + "/verify-email?token=" + verificationToken;
 
@@ -24,6 +24,7 @@ public class EmailService {
         );
     }
 
+    @Override
     public void sendPasswordResetEmail(String email, String resetToken, String clientOrigin) {
         String resetLink = clientOrigin +"/reset-password?token=" + resetToken;
 
@@ -36,6 +37,7 @@ public class EmailService {
 
     }
 
+    @Override
     public void sendMail(String email, String subject, String body) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);

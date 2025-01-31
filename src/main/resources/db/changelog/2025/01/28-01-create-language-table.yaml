@@ -22,6 +22,7 @@ databaseChangeLog:
                   name: code
                   type: VARCHAR(3)
                   constraints:
+                    unique: true
                     nullable: true
 
   - changeSet:

@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.service;
+package org.mbarek0.folioflex.service.translation.impl;
 
 import lombok.AllArgsConstructor;
 import org.mbarek0.folioflex.model.Language;
@@ -6,6 +6,7 @@ import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.LanguageRepository;
 import org.mbarek0.folioflex.repository.PortfolioTranslationLanguageRepository;
+import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.InvalidInputException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
@@ -13,23 +14,22 @@ import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundExcept
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.CreatePortfolioTranslationLanguageVM;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class PortfolioTranslationLanguageService {
+public class PortfolioTranslationLanguageServiceImpl implements PortfolioTranslationLanguageService {
 
     private final PortfolioTranslationLanguageRepository portfolioTranslationLanguageRepository;
     private final LanguageRepository languageRepository;
     private final UserService userService;
 
+    @Override
     public List<PortfolioTranslationLanguage> save(List<CreatePortfolioTranslationLanguageVM> createPortfolioTranslationLanguageVMs) {
 
         if (createPortfolioTranslationLanguageVMs == null) {
@@ -81,6 +81,7 @@ public class PortfolioTranslationLanguageService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public PortfolioTranslationLanguage save(Long userId, Long languageId) {
         if (!userService.existsById(userId)) {
             throw new UserNotFoundException("User with ID: " + userId + " not found");
@@ -106,6 +107,7 @@ public class PortfolioTranslationLanguageService {
         return portfolioTranslationLanguageRepository.save(pTL);
     }
 
+    @Override
     public List<PortfolioTranslationLanguage> getAllPortfolioTranslationLanguagesForUser(Long userId) {
         if (!userService.existsById(userId)) {
             throw new UserNotFoundException("User with ID: " + userId + " not found");
@@ -116,10 +118,12 @@ public class PortfolioTranslationLanguageService {
         return portfolioTranslationLanguageRepository.findByUser(user);
     }
 
+    @Override
     public List<Language> getAllPortfolioTranslationLanguage() {
         return languageRepository.findAll();
     }
 
+    @Override
     public PortfolioTranslationLanguage updatePortfolioTranslationLanguagePrimary(Long userId, Long languageId) {
         User user = userService.findUserById(userId);
         Language language = languageRepository.findById(languageId)
@@ -142,6 +146,7 @@ public class PortfolioTranslationLanguageService {
         return portfolioTranslationLanguageRepository.save(pTL);
     }
 
+    @Override
     public void deletePortfolioTranslationLanguage(Long userId, Long languageId) {
         //TODO: Implement this method
     }

@@ -7,7 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "languages")
