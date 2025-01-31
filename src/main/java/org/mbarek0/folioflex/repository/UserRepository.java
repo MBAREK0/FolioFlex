@@ -29,5 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByPasswordResetToken(String token);
 
+    // methods needs ------------
+    // --> mark user as deleted
 }
 

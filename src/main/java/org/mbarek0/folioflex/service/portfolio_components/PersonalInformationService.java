@@ -15,4 +15,6 @@ public interface PersonalInformationService {
     List<String> getMissingLanguages(Long userId);
 
     PersonalInformation getPersonalInformation(String username, String languageCode);
+
+    List<PersonalInformation> getAllPersonalInformation(String username);
 }

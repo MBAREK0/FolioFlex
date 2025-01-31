@@ -81,6 +81,8 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
                 .collect(Collectors.toList());
     }
 
+
+
     @Override
     public PortfolioTranslationLanguage save(Long userId, Long languageId) {
         if (!userService.existsById(userId)) {
@@ -132,6 +134,14 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     @Override
     public List<Language> findLanguagesByUserId(Long userId){
         return portfolioTranslationLanguageRepository.findLanguagesByUserId(userId);
+    }
+
+    @Override
+    public Language getPrimaryLanguage(User user) {
+        PortfolioTranslationLanguage pTL = portfolioTranslationLanguageRepository.findByUserAndIsPrimaryAndIsDeletedFalse(user, true)
+                .orElseThrow(() -> new InvalidInputException("Primary portfolio translation language not found"));
+
+        return pTL.getLanguage();
     }
 
 

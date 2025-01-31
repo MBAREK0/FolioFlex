@@ -23,4 +23,7 @@ public interface PortfolioTranslationLanguageRepository extends JpaRepository<Po
     Optional<PortfolioTranslationLanguage> findByisPrimaryAndIsDeletedFalse(boolean primary);
 
     @Query("SELECT ptl.language FROM PortfolioTranslationLanguage ptl WHERE ptl.user.id = :userId AND ptl.isDeleted = false")
-    List<Language> findLanguagesByUserId(@Param("userId") Long userId);}
+    List<Language> findLanguagesByUserId(@Param("userId") Long userId);
+
+    Optional<PortfolioTranslationLanguage> findByUserAndIsPrimaryAndIsDeletedFalse(User user, boolean b);
+}

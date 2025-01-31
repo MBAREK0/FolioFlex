@@ -17,12 +17,14 @@ public interface PersonalInformationRepository extends JpaRepository<PersonalInf
     Optional<PersonalInformation> findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language language);
 
     @Query("SELECT COUNT(p) > 0 FROM PersonalInformation p WHERE " +
-            "(p.profilePhoto = :url OR p.backgroundBanner = :url) AND p.user = :user")
+            "(p.profilePhoto = :url OR p.backgroundBanner = :url) AND p.user = :user AND p.isDeleted = false AND p.isArchived = false")
     boolean existsByUserAndProfilePhotoUrlOrBackgroundBannerUrl(
             @Param("user") User user,
             @Param("url") String url
     );
 
-    @Query("SELECT pi.language FROM PersonalInformation pi WHERE pi.user.id = :userId")
+    @Query("SELECT pi.language FROM PersonalInformation pi WHERE pi.user.id = :userId AND pi.isDeleted = false AND pi.isArchived = false")
     List<Language> findLanguagesByUserId(@Param("userId") Long userId);
+
+    List<PersonalInformation> findAllByUserAndIsDeletedFalseAndIsArchivedFalse(User user);
 }

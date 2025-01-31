@@ -7,16 +7,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
-import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.PersonalInformationService;
 import org.mbarek0.folioflex.web.vm.mapper.PersonalInformationMapper;
 import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
 import org.mbarek0.folioflex.web.vm.response.PersonalInformationVM;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +60,26 @@ public class PersonalInformationController {
         return ResponseEntity.ok(responseBody);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{username}/primary")
+    @Operation(
+            summary = "Get personal information with specific language for specific user",
+            description = "Retrieves personal information for a user in a specific language by username",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Personal information retrieved successfully"),
+                    @ApiResponse(responseCode = "404", description = "Personal information not found")
+            }
+    )
+    public ResponseEntity<PersonalInformationVM> getPersonalInformation(
+            @Parameter(description = "Username of the user", required = true)
+            @PathVariable String username) {
+
+        PersonalInformation personalInformation = personalInformationService.getPersonalInformation(username, null);
+        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{username}/{languageCode}")
     @Operation(
             summary = "Get personal information with specific language for specific user",
             description = "Retrieves personal information for a user in a specific language by username",
@@ -75,12 +91,34 @@ public class PersonalInformationController {
     public ResponseEntity<PersonalInformationVM> getPersonalInformation(
             @Parameter(description = "Username of the user", required = true)
             @PathVariable String username,
-            @Parameter(description = "Language code", required = true)
-            @RequestParam String languageCode) {
+            @Parameter(description = "Language code , if not provided, will return data by all languages")
+            @PathVariable String languageCode) {
 
         PersonalInformation personalInformation = personalInformationService.getPersonalInformation(username, languageCode);
         PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{username}")
+    @Operation(
+            summary = "Get all personal information for specific user",
+            description = "Retrieves all personal information for a user by username",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Personal information retrieved successfully"),
+                    @ApiResponse(responseCode = "404", description = "Personal information not found")
+            }
+    )
+    public ResponseEntity<List<PersonalInformationVM>> getallPersonalInformation(
+            @Parameter(description = "Username of the user", required = true)
+            @PathVariable String username) {
+
+        List<PersonalInformation> personalInformation = personalInformationService.getAllPersonalInformation(username);
+        List<PersonalInformationVM> response = personalInformation.stream()
+                .map(personalInformationMapper::toVM)
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -37,4 +37,6 @@ public interface PortfolioTranslationLanguageService {
     boolean existsByUserAndLanguage(User user, Language lang);
 
     List<Language> findLanguagesByUserId(Long userId);
+
+    Language getPrimaryLanguage(User user);
 }

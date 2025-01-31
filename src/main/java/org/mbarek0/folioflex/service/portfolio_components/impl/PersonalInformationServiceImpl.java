@@ -133,12 +133,26 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         User user = userService.findByUsername(username).orElseThrow(
                 () -> new UserNotFoundException("User not found")
         );
+        Language lang ;
 
-        Language lang = portfolioTranslationLanguageService.getLanguageByCode(languageCode);
+        if (languageCode == null || languageCode.isEmpty())
+            lang = portfolioTranslationLanguageService.getPrimaryLanguage(user);
+        else
+            lang = portfolioTranslationLanguageService.getLanguageByCode(languageCode);
 
 
         return personalInformationRepository.findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, lang)
                 .orElseThrow(() -> new PersonalInformationNotFoundException("Personal information not found"));
     }
+
+    @Override
+    public List<PersonalInformation> getAllPersonalInformation(String username) {
+        User user = userService.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        return personalInformationRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user);
+    }
+
 
 }
