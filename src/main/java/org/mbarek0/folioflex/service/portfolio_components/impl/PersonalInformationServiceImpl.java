@@ -9,13 +9,16 @@ import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.PersonalInformationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -39,15 +42,19 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         if (personalInformationRepository.findByUserAndLanguage(user,lang).isPresent())
             throw new PersonalInformationAlreadyExistsException("Personal information already exists");
 
-        String profilePhotoUrl;
-        String backgroundBannerUrl;
 
-        if (request.getProfilePhoto() == null) profilePhotoUrl = null;
-        else profilePhotoUrl = s3Service.uploadFile(request.getProfilePhoto());
 
-        if (request.getBackgroundBanner() == null) backgroundBannerUrl = null;
-        else backgroundBannerUrl = s3Service.uploadFile(request.getBackgroundBanner());
+        String profilePhotoUrl = resolveImageUrl(
+                request.getProfilePhotoFile(),
+                request.getProfilePhotoUrl(),
+                user
+        );
 
+        String backgroundBannerUrl = resolveImageUrl(
+                request.getBackgroundBannerFile(),
+                request.getBackgroundBannerUrl(),
+                user
+        );
 
         PersonalInformation personalInformation = new PersonalInformation();
         personalInformation.setUser(user);
@@ -66,9 +73,55 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
         return personalInformationRepository.save(personalInformation);
 
-
-
-
-
     }
+
+    private String resolveImageUrl(MultipartFile file, String url, User user) {
+        if (file != null && !file.isEmpty()) {
+            return s3Service.uploadFile(file);
+        } else if (url != null && !url.isEmpty() ) {
+            validateImageUrlOwnership(url, user);
+            return url;
+        }
+        return null;
+    }
+
+    private void validateImageUrlOwnership(String url, User user) {
+        boolean isUrlValid = personalInformationRepository.existsByUserAndProfilePhotoUrlOrBackgroundBannerUrl(user, url);
+        if (!isUrlValid) {
+            throw new InvalidImageUrlException("Image URL does not belong to user");
+        }
+    }
+
+    @Override
+    public boolean hasMissingTranslations(Long userId){
+        // Get all languages the user has selected for translations
+        List<Language> selectedLanguages = portfolioTranslationLanguageService
+                .findLanguagesByUserId(userId);
+
+        // Get all languages the user has completed translations for
+        List<Language> completedLanguages = personalInformationRepository
+                .findLanguagesByUserId(userId);
+
+        return !completedLanguages.containsAll(selectedLanguages);
+    }
+
+    @Override
+    public List<String> getMissingLanguages(Long userId){
+        // Get all languages the user has selected for translations
+        List<Language> selectedLanguages = portfolioTranslationLanguageService
+                .findLanguagesByUserId(userId);
+
+        // Get all languages the user has completed translations for
+        List<Language> completedLanguages = personalInformationRepository
+                .findLanguagesByUserId(userId);
+
+        // Find the missing languages
+        selectedLanguages.removeAll(completedLanguages);
+
+        // return this format code:language
+        return selectedLanguages.stream()
+                .map(language -> language.getLanguage() + "(" + language.getCode() + ")")
+                .toList();
+    }
+
 }

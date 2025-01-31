@@ -130,6 +130,12 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     }
 
     @Override
+    public List<Language> findLanguagesByUserId(Long userId){
+        return portfolioTranslationLanguageRepository.findLanguagesByUserId(userId);
+    }
+
+
+    @Override
     public PortfolioTranslationLanguage updatePortfolioTranslationLanguagePrimary(Long userId, Long languageId) {
         User user = userService.findUserById(userId);
         Language language = languageRepository.findById(languageId)
@@ -160,4 +166,6 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     public void deletePortfolioTranslationLanguage(Long userId, Long languageId) {
         //TODO: Implement this method
     }
+
+
 }

@@ -20,22 +20,13 @@ public interface PersonalInformationMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
     @Mapping(target = "isArchived", ignore = true)
-    @Mapping(target = "profilePhoto", source = "profilePhoto", qualifiedByName = "mapMultipartFileToString")
-    @Mapping(target = "backgroundBanner", source = "backgroundBanner", qualifiedByName = "mapMultipartFileToString")
+    @Mapping(target = "profilePhoto", ignore = true)  // Handled in service
+    @Mapping(target = "backgroundBanner", ignore = true)  // Handled in service
     PersonalInformation toEntity(CreatePersonalInformationVM vm);
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "language.code", target = "languageCode")
+    @Mapping(source = "profilePhoto", target = "profilePhoto")  // Map entity field to VM field
+    @Mapping(source = "backgroundBanner", target = "backgroundBanner")  // Map entity field to VM field
     PersonalInformationVM toVM(PersonalInformation entity);
-
-    // Custom mapping method for MultipartFile -> String
-    @org.mapstruct.Named("mapMultipartFileToString")
-    default String mapMultipartFileToString(MultipartFile file) {
-        if (file != null && !file.isEmpty()) {
-            // Here, you can implement the logic to save the file and return the URL/path.
-            // For simplicity, we return the file's original filename.
-            return file.getOriginalFilename();
-        }
-        return null;
-    }
 }
