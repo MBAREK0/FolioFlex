@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -11,33 +12,34 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreatePersonalInformationVM {
-        @NotNull(message = "User ID cannot be null")
-        Long userId;
+    @NotNull(message = "User ID cannot be null")
+    Long userId;
 
-        @NotBlank(message = "Language code is required")
-        @Size(min = 2, max = 5, message = "Language code must be between 2 and 5 characters")
-        String languageCode;
+    @NotBlank(message = "Language code is required")
+    @Size(min = 2, max = 5, message = "Language code must be between 2 and 5 characters")
+    String languageCode;
 
-        @NotBlank(message = "First name is required")
-        @Size(max = 50, message = "First name cannot exceed 50 characters")
-        String firstName;
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name cannot exceed 50 characters")
+    String firstName;
 
-        @NotBlank(message = "Last name is required")
-        @Size(max = 50, message = "Last name cannot exceed 50 characters")
-        String lastName;
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name cannot exceed 50 characters")
+    String lastName;
 
-        String profilePhoto;
-        String backgroundBanner;
 
-        @NotBlank(message = "Headline is required")
-        @Size(max = 100, message = "Headline cannot exceed 100 characters")
-        String headline;
+    MultipartFile profilePhoto;
+    MultipartFile backgroundBanner;
 
-        @NotBlank(message = "Location is required")
-        @Size(max = 100, message = "Location cannot exceed 100 characters")
-        String location;
+    @NotBlank(message = "Headline is required")
+    @Size(max = 100, message = "Headline cannot exceed 100 characters")
+    String headline;
 
-        @Size(max = 2000, message = "About cannot exceed 2000 characters")
-        String about;
+    @NotBlank(message = "Location is required")
+    @Size(max = 100, message = "Location cannot exceed 100 characters")
+    String location;
+
+    @Size(max = 2000, message = "About cannot exceed 2000 characters")
+    String about;
 }
 

@@ -5,6 +5,7 @@ import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
 import org.mbarek0.folioflex.repository.PersonalInformationRepository;
+import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.PersonalInformationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
@@ -23,6 +24,8 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     private final PortfolioTranslationLanguageService portfolioTranslationLanguageService;
     private final UserService userService;
     private final PersonalInformationRepository personalInformationRepository;
+    private final S3Service s3Service;
+
 
     @Override
     public PersonalInformation createPersonalInformation(CreatePersonalInformationVM request) {
@@ -36,14 +39,23 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         if (personalInformationRepository.findByUserAndLanguage(user,lang).isPresent())
             throw new PersonalInformationAlreadyExistsException("Personal information already exists");
 
+        String profilePhotoUrl;
+        String backgroundBannerUrl;
+
+        if (request.getProfilePhoto() == null) profilePhotoUrl = null;
+        else profilePhotoUrl = s3Service.uploadFile(request.getProfilePhoto());
+
+        if (request.getBackgroundBanner() == null) backgroundBannerUrl = null;
+        else backgroundBannerUrl = s3Service.uploadFile(request.getBackgroundBanner());
+
 
         PersonalInformation personalInformation = new PersonalInformation();
         personalInformation.setUser(user);
         personalInformation.setLanguage(lang);
         personalInformation.setFirstName(request.getFirstName());
         personalInformation.setLastName(request.getLastName());
-        personalInformation.setBackgroundBanner(request.getBackgroundBanner());
-        personalInformation.setProfilePhoto(request.getProfilePhoto());
+        personalInformation.setBackgroundBanner(profilePhotoUrl);
+        personalInformation.setProfilePhoto(backgroundBannerUrl);
         personalInformation.setAbout(request.getAbout());
         personalInformation.setLocation(request.getLocation());
         personalInformation.setHeadline(request.getHeadline());

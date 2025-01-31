@@ -12,6 +12,7 @@ import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,7 +21,9 @@ import org.springframework.web.context.request.WebRequest;
 import javax.management.relation.RoleNotFoundException;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -139,6 +142,38 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex, WebRequest request) {
+
+        // Collect detailed validation errors
+        List<Map<String, String>> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> {
+                    Map<String, String> errorDetails = new HashMap<>();
+                    errorDetails.put("field", fieldError.getField());
+                    errorDetails.put("message", fieldError.getDefaultMessage());
+                    return errorDetails;
+                })
+                .collect(Collectors.toList());
+
+        // Create a generic message for the base response
+        String baseMessage = "Validation failed";
+        RuntimeException validationEx = new RuntimeException(baseMessage);
+
+        // Build the base error response using the helper method
+        ResponseEntity<Map<String, Object>> responseEntity =
+                buildErrorResponse(validationEx, HttpStatus.BAD_REQUEST, request);
+
+        // Enhance the response with validation details
+        Map<String, Object> responseBody = responseEntity.getBody();
+        if (responseBody != null) {
+            responseBody.put("message", baseMessage + " (" + errors.size() + " error(s))");
+            responseBody.put("errors", errors);  // Include detailed errors
+        }
+
+        return responseEntity;
+    }
     // Helper method to build the error response
     private ResponseEntity<Map<String, Object>> buildErrorResponse(
             RuntimeException ex, HttpStatus status, WebRequest request) {
