@@ -92,7 +92,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
         Language language = languageRepository.findById(languageId)
                 .orElseThrow(() -> new LanguageNotFoundException(languageId));
 
-        if (portfolioTranslationLanguageRepository.existsByLanguageAndUser(language, user)) {
+        if (portfolioTranslationLanguageRepository.existsByLanguageAndUserAndIsDeletedFalse(language, user)) {
             throw new PortfolioTranslationLanguageAlreadyExistsException(userId);
         }
 
@@ -115,7 +115,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
 
         User user = userService.findUserById(userId);
 
-        return portfolioTranslationLanguageRepository.findByUser(user);
+        return portfolioTranslationLanguageRepository.findByUserAndIsDeletedFalse(user);
     }
 
     @Override
@@ -142,13 +142,16 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
                 .orElseThrow(() -> new LanguageNotFoundException(languageId));
 
         PortfolioTranslationLanguage pTL = portfolioTranslationLanguageRepository
-                .findByUserAndLanguage(user, language);
+                .findByUserAndLanguageAndIsDeletedFalse(user, language).orElseThrow(
+                        () -> new InvalidInputException("Portfolio translation language not found for user with ID: " + userId + " and language ID: " + languageId)
+                );
 
         if (pTL == null) {
             throw new InvalidInputException("Portfolio translation language not found for user with ID: " + userId + " and language ID: " + languageId);
         }
 
-        PortfolioTranslationLanguage pTLPrimary = portfolioTranslationLanguageRepository.findByisPrimary(true);
+        PortfolioTranslationLanguage pTLPrimary = portfolioTranslationLanguageRepository.findByisPrimaryAndIsDeletedFalse(true)
+                .orElseThrow(() -> new InvalidInputException("Primary portfolio translation language not found"));
         if (pTLPrimary != null) {
             pTLPrimary.setPrimary(false);
             portfolioTranslationLanguageRepository.save(pTLPrimary);
@@ -159,7 +162,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     }
 
     public boolean existsByUserAndLanguage(User user, Language lang) {
-        return portfolioTranslationLanguageRepository.existsByLanguageAndUser(lang, user);
+        return portfolioTranslationLanguageRepository.existsByLanguageAndUserAndIsDeletedFalse(lang, user);
     }
 
     @Override

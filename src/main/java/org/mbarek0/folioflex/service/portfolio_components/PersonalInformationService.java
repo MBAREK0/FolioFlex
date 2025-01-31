@@ -13,4 +13,6 @@ public interface PersonalInformationService {
     boolean hasMissingTranslations(Long userId);
 
     List<String> getMissingLanguages(Long userId);
+
+    PersonalInformation getPersonalInformation(String username, String languageCode);
 }

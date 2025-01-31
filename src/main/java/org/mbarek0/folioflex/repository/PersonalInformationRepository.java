@@ -13,7 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface PersonalInformationRepository extends JpaRepository<PersonalInformation, Long> {
-    Optional<PersonalInformation> findByUserAndLanguage(User user, Language language);
+
+    Optional<PersonalInformation> findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language language);
 
     @Query("SELECT COUNT(p) > 0 FROM PersonalInformation p WHERE " +
             "(p.profilePhoto = :url OR p.backgroundBanner = :url) AND p.user = :user")

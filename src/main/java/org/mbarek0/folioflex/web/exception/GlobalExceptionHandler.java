@@ -4,6 +4,7 @@ package org.mbarek0.folioflex.web.exception;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
@@ -130,6 +131,14 @@ public class GlobalExceptionHandler {
             InvalidImageUrlException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
+
+    @ExceptionHandler(PersonalInformationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handlePersonalInformationNotFoundException(
+            PersonalInformationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
 
     /** --------------------------------------- Global Exceptions  */
 

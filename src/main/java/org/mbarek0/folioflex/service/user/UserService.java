@@ -19,4 +19,5 @@ public interface UserService {
     boolean existsById(Long id);
 
     boolean markUserAsDeleted(Long userId);
+
 }

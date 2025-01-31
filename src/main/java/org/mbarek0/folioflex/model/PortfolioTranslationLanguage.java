@@ -30,4 +30,6 @@ public class PortfolioTranslationLanguage {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private boolean isDeleted = false;
 }

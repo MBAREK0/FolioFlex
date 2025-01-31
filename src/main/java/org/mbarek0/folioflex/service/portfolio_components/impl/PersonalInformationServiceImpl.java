@@ -11,7 +11,9 @@ import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageSer
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
+import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     private final S3Service s3Service;
 
 
+    // -------------------------------- Create Personal Information --------------------------------
     @Override
     public PersonalInformation createPersonalInformation(CreatePersonalInformationVM request) {
         Language lang = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
@@ -39,7 +42,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
             throw new UserDontHaveLanguageException("User is not allowed to use this language");
 
 
-        if (personalInformationRepository.findByUserAndLanguage(user,lang).isPresent())
+        if (personalInformationRepository.findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user,lang).isPresent())
             throw new PersonalInformationAlreadyExistsException("Personal information already exists");
 
 
@@ -122,6 +125,20 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         return selectedLanguages.stream()
                 .map(language -> language.getLanguage() + "(" + language.getCode() + ")")
                 .toList();
+    }
+
+    // -------------------------------- find Personal Information --------------------------------
+    @Override
+    public PersonalInformation getPersonalInformation(String username, String languageCode) {
+        User user = userService.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        Language lang = portfolioTranslationLanguageService.getLanguageByCode(languageCode);
+
+
+        return personalInformationRepository.findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, lang)
+                .orElseThrow(() -> new PersonalInformationNotFoundException("Personal information not found"));
     }
 
 }

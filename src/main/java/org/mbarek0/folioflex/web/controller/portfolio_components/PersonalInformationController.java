@@ -43,27 +43,44 @@ public class PersonalInformationController {
     public ResponseEntity<Map<String, Object>> createPersonalInformation(
             @Valid @ModelAttribute CreatePersonalInformationVM request) {
 
-        // Create personal information
         PersonalInformation personalInformation = personalInformationService.createPersonalInformation(request);
 
-        // Check if there are missing translations for other languages
         boolean hasMissingTranslations = personalInformationService.hasMissingTranslations(request.getUserId());
 
-        // Build the response
         PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
 
         List<String> missingLanguages = personalInformationService.getMissingLanguages(request.getUserId());
 
         // Create a custom response body
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("data", response); // Include the personal information data
-        responseBody.put("status", hasMissingTranslations ? "INCOMPLETE" : "COMPLETE"); // Custom status
+        responseBody.put("data", response);
+        responseBody.put("status", hasMissingTranslations ? "INCOMPLETE" : "COMPLETE");
         responseBody.put("message", hasMissingTranslations ?
                 "Complete the missing translations for the following languages: " + missingLanguages :
 
                 "Personal information created successfully");
 
-        // Always return 200 OK with a custom status in the response body
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/{username}")
+    @Operation(
+            summary = "Get personal information with specific language for specific user",
+            description = "Retrieves personal information for a user in a specific language by username",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Personal information retrieved successfully"),
+                    @ApiResponse(responseCode = "404", description = "Personal information not found")
+            }
+    )
+    public ResponseEntity<PersonalInformationVM> getPersonalInformation(
+            @Parameter(description = "Username of the user", required = true)
+            @PathVariable String username,
+            @Parameter(description = "Language code", required = true)
+            @RequestParam String languageCode) {
+
+        PersonalInformation personalInformation = personalInformationService.getPersonalInformation(username, languageCode);
+        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+
+        return ResponseEntity.ok(response);
     }
 }
