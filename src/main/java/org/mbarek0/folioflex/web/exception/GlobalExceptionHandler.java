@@ -2,9 +2,11 @@ package org.mbarek0.folioflex.web.exception;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
@@ -101,6 +103,22 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    // hndle UserDontHaveLanguageException
+    @ExceptionHandler(UserDontHaveLanguageException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleUserDontHaveLanguageException(
+            UserDontHaveLanguageException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // ---------------------------------------- Portfolio Exceptions
+
+    @ExceptionHandler(PersonalInformationAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handlePersonalInformationAlreadyExistsException(
+            PersonalInformationAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
 
     /** --------------------------------------- Global Exceptions  */
 

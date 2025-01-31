@@ -1,7 +1,10 @@
 package org.mbarek0.folioflex.service.translation;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
+import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.web.exception.InvalidInputException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
@@ -28,4 +31,8 @@ public interface PortfolioTranslationLanguageService {
             throws UserNotFoundException, LanguageNotFoundException, InvalidInputException;
 
     void deletePortfolioTranslationLanguage(Long userId, Long languageId);
+
+    Language getLanguageByCode(String s);
+
+    boolean existsByUserAndLanguage(User user, Language lang);
 }

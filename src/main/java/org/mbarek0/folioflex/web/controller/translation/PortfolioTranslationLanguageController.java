@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.web.controller;
+package org.mbarek0.folioflex.web.controller.translation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

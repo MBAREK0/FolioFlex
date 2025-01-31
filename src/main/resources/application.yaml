@@ -54,6 +54,14 @@ springdoc:
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
+
+aws:
+  s3:
+    bucket-name: folioflex-user-images
+    access-key: ${AWT_ACCESS_KEY}
+    secret-key: ${AWT_SECRET_ACCESS_KEY}
+#    region: eu-north-1
+
 gemini:
   api:
     key: ${GEMINI_API_KEY}

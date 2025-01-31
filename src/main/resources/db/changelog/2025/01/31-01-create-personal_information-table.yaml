@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 1738278126-create-personal_informations-table
+      id: 1738278126-create-personal_information-table
       author: MBAREK0
       changes:
         - createTable:
-            tableName: personal_informations
+            tableName: personal_information
             columns:
               - column:
                   name: id
@@ -78,30 +78,30 @@ databaseChangeLog:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: personal_informations
+            baseTableName: personal_information
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_personal_informations_user
+            constraintName: fk_personal_information_user
 
 
         - addForeignKeyConstraint:
-            baseTableName: personal_informations
+            baseTableName: personal_information
             baseColumnNames: language_code
             referencedTableName: languages
             referencedColumnNames: code
-            constraintName: fk_personal_informations_language
+            constraintName: fk_personal_information_language
 
         - createIndex:
-            tableName: personal_informations
-            indexName: idx_personal_informations_user
+            tableName: personal_information
+            indexName: idx_personal_information_user
             columns:
               - column:
                   name: user_id
 
         - createIndex:
-            tableName: personal_informations
-            indexName: idx_personal_informations_language
+            tableName: personal_information
+            indexName: idx_personal_information_language
             columns:
               - column:
                   name: language_code
