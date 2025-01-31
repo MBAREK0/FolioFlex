@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.service.user;
+package org.mbarek0.folioflex.service.user.impl;
 
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.UserRepository;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

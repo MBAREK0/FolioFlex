@@ -1,0 +1,107 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1738278126-create-personal_information-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: personal_information
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language_code
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_photo
+                  type: varchar(255)
+              - column:
+                  name: background_banner
+                  type: varchar(255)
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: headline
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: about
+                  type: text
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_archived
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: personal_information
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_personal_information_user
+
+
+        - addForeignKeyConstraint:
+            baseTableName: personal_information
+            baseColumnNames: language_code
+            referencedTableName: languages
+            referencedColumnNames: code
+            constraintName: fk_personal_information_language
+
+        - createIndex:
+            tableName: personal_information
+            indexName: idx_personal_information_user
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: personal_information
+            indexName: idx_personal_information_language
+            columns:
+              - column:
+                  name: language_code

@@ -9,14 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "portfolio_translation_languages")
 public class PortfolioTranslationLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "language_id")
