@@ -17,4 +17,7 @@ public interface PersonalInformationService {
     PersonalInformation getPersonalInformation(String username, String languageCode);
 
     List<PersonalInformation> getAllPersonalInformation(String username);
+
+    PersonalInformation updatePersonalInformation(Long id, CreatePersonalInformationVM request);
+
 }

@@ -121,4 +121,24 @@ public class PersonalInformationController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}")
+    @Operation(
+            summary = "Update personal information",
+            description = "Updates personal information for a user in a specific language",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Personal information updated successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid input")
+            }
+    )
+    public ResponseEntity<PersonalInformationVM> updatePersonalInformation(
+            @Parameter(description = "Personal information ID", required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody @ModelAttribute CreatePersonalInformationVM request) {
+
+        PersonalInformation personalInformation = personalInformationService.updatePersonalInformation(id, request);
+        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

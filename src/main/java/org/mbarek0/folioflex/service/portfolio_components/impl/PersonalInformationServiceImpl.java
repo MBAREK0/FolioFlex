@@ -15,12 +15,12 @@ import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -153,6 +153,59 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
         return personalInformationRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user);
     }
+
+
+    // -------------------------------- Update Personal Information --------------------------------
+    @Override
+    public PersonalInformation updatePersonalInformation(Long id, CreatePersonalInformationVM request) {
+
+        PersonalInformation personalInformation = personalInformationRepository.findById(id)
+                .orElseThrow(() -> new PersonalInformationNotFoundException("Personal information not found"));
+
+        User user = userService.findUserById(request.getUserId());
+        Language lang = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
+
+        if (!portfolioTranslationLanguageService.existsByUserAndLanguage(user, lang)) {
+            throw new UserDontHaveLanguageException("User is not allowed to use this language");
+        }
+
+        if (!personalInformation.getUser().equals(user)) {
+            throw new PersonalInformationNotFoundException("Personal information not found");
+        }
+
+        Optional<PersonalInformation> existingInfo = personalInformationRepository
+                .findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, lang);
+
+        if (existingInfo.isPresent() && !existingInfo.get().getId().equals(id)) {
+            throw new PersonalInformationAlreadyExistsException("Personal information already exists for this language");
+        }
+
+        String profilePhotoUrl = resolveImageUrl(
+                request.getProfilePhotoFile(),
+                request.getProfilePhotoUrl(),
+                user
+        );
+
+        String backgroundBannerUrl = resolveImageUrl(
+                request.getBackgroundBannerFile(),
+                request.getBackgroundBannerUrl(),
+                user
+        );
+
+        personalInformation.setLanguage(lang);
+        personalInformation.setFirstName(request.getFirstName());
+        personalInformation.setLastName(request.getLastName());
+        personalInformation.setProfilePhoto(profilePhotoUrl);
+        personalInformation.setBackgroundBanner(backgroundBannerUrl);
+        personalInformation.setAbout(request.getAbout());
+        personalInformation.setLocation(request.getLocation());
+        personalInformation.setHeadline(request.getHeadline());
+        personalInformation.setUpdatedAt(LocalDateTime.now());
+
+        return personalInformationRepository.save(personalInformation);
+    }
+
+
 
 
 }
