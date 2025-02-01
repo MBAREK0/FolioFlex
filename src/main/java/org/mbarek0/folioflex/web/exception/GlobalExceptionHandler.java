@@ -5,6 +5,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
@@ -118,6 +121,7 @@ public class GlobalExceptionHandler {
 
     // ---------------------------------------- Portfolio Exceptions
 
+    // Handle PersonalInformationAlreadyExistsException
     @ExceptionHandler(PersonalInformationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Map<String, Object>> handlePersonalInformationAlreadyExistsException(
@@ -125,6 +129,7 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
+    // Handle InvalidImageUrlException
     @ExceptionHandler(InvalidImageUrlException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Map<String, Object>> handleInvalidImageUrlException(
@@ -132,10 +137,35 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
+    // Handle PersonalInformationNotFoundException
     @ExceptionHandler(PersonalInformationNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Map<String, Object>> handlePersonalInformationNotFoundException(
             PersonalInformationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // Handle InvalidWorkExperienceDataException
+    @ExceptionHandler(InvalidWorkExperienceDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidWorkExperienceDataException(
+            InvalidWorkExperienceDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // Handle WorkExperienceNotFoundException
+    @ExceptionHandler(WorkExperienceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceNotFoundException(
+            WorkExperienceNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // Handle WorkExperienceAlreadyExistsException
+    @ExceptionHandler(WorkExperienceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceAlreadyExistsException(
+            WorkExperienceAlreadyExistsException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
@@ -160,6 +190,7 @@ public class GlobalExceptionHandler {
 
 
 
+    // Handle MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
             MethodArgumentNotValidException ex, WebRequest request) {
@@ -191,6 +222,8 @@ public class GlobalExceptionHandler {
 
         return responseEntity;
     }
+
+
     // Helper method to build the error response
     private ResponseEntity<Map<String, Object>> buildErrorResponse(
             RuntimeException ex, HttpStatus status, WebRequest request) {
