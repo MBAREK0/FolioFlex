@@ -24,4 +24,6 @@ public interface WorkExperienceService {
     List<WorkExperience> reorder(List<ReorderRequest> reorderRequests);
 
     List<WorkExperience> deleteWorkExperience(UUID uuid);
+
+    List<WorkExperience> archiveWorkExperience(UUID uuid);
 }

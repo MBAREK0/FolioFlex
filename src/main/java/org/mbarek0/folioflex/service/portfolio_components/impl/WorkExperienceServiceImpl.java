@@ -244,4 +244,20 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         return workExperienceRepository.saveAll(workExperiences);
     }
+
+    @Override
+    public List<WorkExperience> archiveWorkExperience(UUID uuid) {
+        // mark as archived
+        List<WorkExperience> workExperiences = workExperienceRepository.findAllByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(uuid);
+
+        if (workExperiences.isEmpty())
+            throw new WorkExperienceNotFoundException("Work experience not found with experience ID: " + uuid);
+
+        workExperiences.forEach(workExperience -> {
+            workExperience.setArchived(true);
+            workExperience.setUpdatedAt(LocalDateTime.now());
+        });
+
+        return workExperienceRepository.saveAll(workExperiences);
+    }
 }
