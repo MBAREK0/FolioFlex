@@ -225,4 +225,27 @@ public class WorkExperienceController {
 
         return ResponseEntity.ok(response);
     }
+
+    // mark we as delete (soft delete)
+
+    @DeleteMapping("/experience/{uuid}")
+    @Operation(
+            summary = "Delete work experience",
+            description = "Delete a work experience by experience id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Work experience deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Work experience not found")
+            }
+    )
+    public ResponseEntity<List<WorkExperienceResponseVM>> deleteWorkExperience(
+            @Parameter(description = "Experience ID", required = true)
+            @PathVariable UUID uuid) {
+
+        List<WorkExperience> updatedExperience = workExperienceService.deleteWorkExperience(uuid);
+
+        List<WorkExperienceResponseVM> response = updatedExperience.stream()
+                .map(workExperienceMapper::toVM)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
 }

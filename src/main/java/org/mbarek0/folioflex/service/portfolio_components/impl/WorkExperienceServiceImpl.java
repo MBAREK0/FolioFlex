@@ -226,4 +226,22 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 })
                 .toList();
     }
+
+    // --------------------------------------- Delete & archive Work Experience ---------------------------------------
+
+    @Override
+    public List<WorkExperience> deleteWorkExperience(UUID uuid) {
+        // mark as deleted
+        List<WorkExperience> workExperiences = workExperienceRepository.findAllByExperienceIdAndIsDeletedFalse(uuid);
+
+        if (workExperiences.isEmpty())
+            throw new WorkExperienceNotFoundException("Work experience not found with experience ID: " + uuid);
+
+        workExperiences.forEach(workExperience -> {
+            workExperience.setDeleted(true);
+            workExperience.setUpdatedAt(LocalDateTime.now());
+        });
+
+        return workExperienceRepository.saveAll(workExperiences);
+    }
 }

@@ -22,4 +22,6 @@ public interface WorkExperienceService {
     List<WorkExperience> updateWorkExperience(UUID uuid, List<WorkExperienceRequestVM> workExperienceVM, MultipartFile companyLogoFile);
 
     List<WorkExperience> reorder(List<ReorderRequest> reorderRequests);
+
+    List<WorkExperience> deleteWorkExperience(UUID uuid);
 }

@@ -46,4 +46,6 @@ public interface WorkExperienceRepository extends JpaRepository<WorkExperience, 
     List<WorkExperience> findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, Language language);
 
     List<WorkExperience> findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, UUID experienceId);
+
+    List<WorkExperience> findAllByExperienceIdAndIsDeletedFalse(UUID uuid);
 }
