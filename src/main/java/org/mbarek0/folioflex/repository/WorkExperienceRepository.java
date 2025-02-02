@@ -1,5 +1,6 @@
 package org.mbarek0.folioflex.repository;
 
+import jakarta.validation.constraints.NotNull;
 import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
 import org.mbarek0.folioflex.model.User;
@@ -36,11 +37,13 @@ public interface WorkExperienceRepository extends JpaRepository<WorkExperience, 
 
     boolean existsByUserAndLanguageAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(User user, Language lang, UUID experienceId);
 
-    List<WorkExperience> findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language primaryLanguage);
-
-    List<WorkExperience> findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(User user, UUID experienceId);
-
     Optional<WorkExperience> findByUserAndExperienceIdAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, UUID uuid, Language language);
 
     List<WorkExperience> findAllByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(UUID uuid);
+
+    List<WorkExperience> findALlByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(UUID componentId);
+
+    List<WorkExperience> findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, Language language);
+
+    List<WorkExperience> findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, UUID experienceId);
 }

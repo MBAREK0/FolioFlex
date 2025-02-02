@@ -1,6 +1,8 @@
 package org.mbarek0.folioflex.service.portfolio_components;
 
+import jakarta.validation.Valid;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.WorkExperienceRequestVM;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,4 +20,6 @@ public interface WorkExperienceService {
     WorkExperience getAWorkExperiencs(String username, UUID uuid, String s);
 
     List<WorkExperience> updateWorkExperience(UUID uuid, List<WorkExperienceRequestVM> workExperienceVM, MultipartFile companyLogoFile);
+
+    List<WorkExperience> reorder(List<ReorderRequest> reorderRequests);
 }

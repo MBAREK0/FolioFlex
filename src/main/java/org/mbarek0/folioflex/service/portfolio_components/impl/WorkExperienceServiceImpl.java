@@ -12,6 +12,7 @@ import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.*;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.WorkExperienceRequestVM;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,7 +72,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         if (workExperienceRepository.existsByUserAndLanguageAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(user, lang,experienceId) ) {
             throw new WorkExperienceAlreadyExistsException(
                     "Work experience already exists for this language: "
-                    + lang.getLanguage() + "(" + lang.getCode() + ") And this experiencr Id:"
+                    + lang.getLanguage() + "(" + lang.getCode() + ") And this experience Id:"
                     + experienceId );
         }
 
@@ -117,7 +118,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 portfolioTranslationLanguageService.getPrimaryLanguage(user):
                 portfolioTranslationLanguageService.getLanguageByCode(languageCode);
 
-        return workExperienceRepository.findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, language);
+        return workExperienceRepository.findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, language);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
 
-        return workExperienceRepository.findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(user, experienceId);
+        return workExperienceRepository.findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, experienceId);
     }
 
     @Override
@@ -190,4 +191,39 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         return workExperienceRepository.saveAll(workExperiences);
     }
 
+    @Override
+    public List<WorkExperience> reorder(List<ReorderRequest> reorderRequests) {
+
+
+        List<Integer> displayOrders = reorderRequests.stream()
+                .map(ReorderRequest::getDisplayOrder)
+                .toList();
+        if (displayOrders.size() != new HashSet<>(displayOrders).size())
+            throw new InvalidWorkExperienceDataException("Duplicate display orders in request");
+
+
+        if (reorderRequests.isEmpty())
+            throw new InvalidWorkExperienceDataException("Reorder request is empty");
+
+        Language lang = portfolioTranslationLanguageService.getLanguageByCode(reorderRequests.get(0).getLanguageCode());
+
+       return reorderRequests.stream()
+                .map(req -> {
+                    List<WorkExperience> workExperiences = workExperienceRepository.findALlByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(req.getComponentId());
+                    if (workExperiences.isEmpty())
+                        throw new WorkExperienceNotFoundException("Work experience not found with experience ID: " + req.getComponentId());
+
+                    workExperiences.forEach(we -> we.setDisplayOrder(req.getDisplayOrder()));
+
+                    workExperienceRepository.saveAll(workExperiences);
+
+                    return workExperiences
+                            .stream()
+                            .filter(we -> we.getLanguage().equals(lang))
+                            .findFirst()
+                            .orElseThrow(() -> new WorkExperienceNotFoundException("Work experience not found for language: " + lang.getLanguage()));
+
+                })
+                .toList();
+    }
 }

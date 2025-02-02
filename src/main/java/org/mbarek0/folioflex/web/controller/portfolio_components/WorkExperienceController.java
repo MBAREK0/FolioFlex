@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
 import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.web.vm.mapper.WorkExperienceMapper;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.WorkExperienceRequestVM;
 import org.mbarek0.folioflex.web.vm.response.portfolio_components.WorkExperienceResponseVM;
 import org.springframework.http.MediaType;
@@ -200,6 +201,28 @@ public class WorkExperienceController {
         List<WorkExperienceResponseVM> response = updatedExperience.stream()
                 .map(workExperienceMapper::toVM)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/reorder")
+    @Operation(
+            summary = "Reorder work experiences",
+            description = "Update the display order of work experiences based on drag-and-drop",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Order updated successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid input"),
+                    @ApiResponse(responseCode = "404", description = "Experience not found")
+            }
+    )
+    public ResponseEntity<List<WorkExperienceResponseVM>> reorderWorkExperiences(
+            @Parameter(description = "List of experience IDs with new display orders", required = true)
+            @Valid @RequestBody List<ReorderRequest> reorderRequests) {
+
+        List<WorkExperience> updatedExperiences = workExperienceService.reorder(reorderRequests);
+        List<WorkExperienceResponseVM> response = updatedExperiences.stream()
+                .map(workExperienceMapper::toVM)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(response);
     }
 }
