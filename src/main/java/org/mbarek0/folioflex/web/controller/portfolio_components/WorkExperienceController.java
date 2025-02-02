@@ -329,7 +329,6 @@ public class WorkExperienceController {
         return ResponseEntity.ok(response);
     }
 
-    // mark we as delete (soft delete)
 
     @DeleteMapping("/experience/{uuid}")
     @Operation(
