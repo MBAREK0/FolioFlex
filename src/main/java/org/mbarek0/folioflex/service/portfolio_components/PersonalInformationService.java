@@ -1,14 +1,12 @@
 package org.mbarek0.folioflex.service.portfolio_components;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
-import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.PersonalInformationRequestVM;
 
 import java.util.List;
 
 public interface PersonalInformationService {
-    PersonalInformation createPersonalInformation(CreatePersonalInformationVM request);
+    PersonalInformation createPersonalInformation(PersonalInformationRequestVM request);
 
     boolean hasMissingTranslations(Long userId);
 
@@ -18,6 +16,6 @@ public interface PersonalInformationService {
 
     List<PersonalInformation> getAllPersonalInformation(String username);
 
-    PersonalInformation updatePersonalInformation(Long id, CreatePersonalInformationVM request);
+    PersonalInformation updatePersonalInformation(Long id, PersonalInformationRequestVM request);
 
 }

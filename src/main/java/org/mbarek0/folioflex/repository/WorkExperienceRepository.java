@@ -12,24 +12,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface WorkExperienceRepository extends JpaRepository<WorkExperience, Long> {
 
-    // Find by ID and not deleted/archived
     Optional<WorkExperience> findByIdAndIsDeletedFalseAndIsArchivedFalse(Long id);
-
-    // Find all by user and not deleted/archived, with pagination and sorting
-    Page<WorkExperience> findAllByUserAndIsDeletedFalseAndIsArchivedFalse(User user, Pageable pageable);
+    
     List<WorkExperience> findAllByUserAndIsDeletedFalseAndIsArchivedFalse(User user);
-
-
-    // Find by user, language, and not deleted/archived
+    
     Optional<WorkExperience> findByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language language);
-
-    // Check if a work experience exists for a user and language
-    boolean existsByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language language);
-
+    
     @Query("SELECT we.language FROM WorkExperience we WHERE we.user.id = :userId AND we.isDeleted = false AND we.isArchived = false")
     List<Language> findLanguagesByUserId(@Param("userId") Long userId);
 
@@ -37,4 +30,17 @@ public interface WorkExperienceRepository extends JpaRepository<WorkExperience, 
 
     @Query("SELECT MAX(we.displayOrder) FROM WorkExperience we " +
             "WHERE we.user = :user AND we.isDeleted = false AND we.isArchived = false")
-    Integer findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(@Param("user") User user);}
+    Integer findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(@Param("user") User user);
+
+    boolean existsByExperienceId(UUID experienceId);
+
+    boolean existsByUserAndLanguageAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(User user, Language lang, UUID experienceId);
+
+    List<WorkExperience> findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, Language primaryLanguage);
+
+    List<WorkExperience> findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalse(User user, UUID experienceId);
+
+    Optional<WorkExperience> findByUserAndExperienceIdAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, UUID uuid, Language language);
+
+    List<WorkExperience> findAllByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(UUID uuid);
+}

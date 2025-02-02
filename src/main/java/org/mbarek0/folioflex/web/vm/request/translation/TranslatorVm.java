@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.web.vm.request;
+package org.mbarek0.folioflex.web.vm.request.translation;
 
 import jakarta.validation.constraints.NotBlank;
 

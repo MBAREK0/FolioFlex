@@ -14,8 +14,8 @@ import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsExceptio
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
 import org.mbarek0.folioflex.web.vm.mapper.UserVMMapper;
-import org.mbarek0.folioflex.web.vm.request.RegisterVM;
-import org.mbarek0.folioflex.web.vm.response.TokenVM;
+import org.mbarek0.folioflex.web.vm.request.authentication.RegisterVM;
+import org.mbarek0.folioflex.web.vm.response.authentication.TokenVM;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

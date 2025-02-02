@@ -1,8 +1,8 @@
-package org.mbarek0.folioflex.web.vm.response;
+package org.mbarek0.folioflex.web.vm.response.portfolio_components;
 
 import java.time.LocalDateTime;
 
-public record PersonalInformationVM(
+public record PersonalInformationResponseVM(
         Long id,
         Long userId,
         String languageCode,

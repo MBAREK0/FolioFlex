@@ -1,5 +1,4 @@
-package org.mbarek0.folioflex.web.vm.response;
-
+package org.mbarek0.folioflex.web.vm.response.translation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenVM {
-    private String token;
-    private String refreshToken;
+public class TextTranslatedVm {
+    private String text;
 }

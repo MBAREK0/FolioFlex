@@ -1,4 +1,5 @@
-package org.mbarek0.folioflex.web.vm.response;
+package org.mbarek0.folioflex.web.vm.response.authentication;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TextTranslatedVm {
-    private String text;
+public class TokenVM {
+    private String token;
+    private String refreshToken;
 }

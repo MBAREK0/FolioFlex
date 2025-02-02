@@ -1,6 +1,5 @@
-package org.mbarek0.folioflex.web.vm.request;
+package org.mbarek0.folioflex.web.vm.request.portfolio_components;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePersonalInformationVM {
+public class PersonalInformationRequestVM {
     @NotNull(message = "User ID cannot be null")
     Long userId;
 

@@ -3,8 +3,8 @@ package org.mbarek0.folioflex.service.authentication;
 import jakarta.validation.Valid;
 import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
-import org.mbarek0.folioflex.web.vm.request.RegisterVM;
-import org.mbarek0.folioflex.web.vm.response.TokenVM;
+import org.mbarek0.folioflex.web.vm.request.authentication.RegisterVM;
+import org.mbarek0.folioflex.web.vm.response.authentication.TokenVM;
 
 public interface AuthenticationService {
 

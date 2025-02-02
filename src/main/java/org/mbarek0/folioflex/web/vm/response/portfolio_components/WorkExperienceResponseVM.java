@@ -1,18 +1,20 @@
-package org.mbarek0.folioflex.web.vm.response;
+package org.mbarek0.folioflex.web.vm.response.portfolio_components;
 
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkExperienceVM {
+public class WorkExperienceResponseVM {
 
     private Long id;
+    private UUID experienceId;
     private Long userId;
     private String languageCode;
     private String jobTitle;

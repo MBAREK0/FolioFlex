@@ -1,18 +1,21 @@
 package org.mbarek0.folioflex.service.portfolio_components;
 
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
-import org.mbarek0.folioflex.web.vm.request.CreateWorkExperienceVM;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.WorkExperienceRequestVM;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface WorkExperienceService {
-    WorkExperience createWorkExperience(CreateWorkExperienceVM request);
-    WorkExperience getWorkExperience(Long id);
-    Page<WorkExperience> getAllWorkExperiences(String username, Pageable pageable);
-    WorkExperience updateWorkExperience(Long id, CreateWorkExperienceVM request);
-    void deleteWorkExperience(Long id, Long userId);
-    boolean hasMissingTranslations(Long userId);
-    List<String> getMissingLanguages(Long userId);
+    
+    List<WorkExperience> createWorkExperience(List<WorkExperienceRequestVM> request, MultipartFile companyLogoFile);
+  
+    List<WorkExperience> getAllWorkExperiences(String username, String languageCode);
+  
+    List<WorkExperience> getAllWorkExperiences(String username, UUID experienceId);
+
+    WorkExperience getAWorkExperiencs(String username, UUID uuid, String s);
+
+    List<WorkExperience> updateWorkExperience(UUID uuid, List<WorkExperienceRequestVM> workExperienceVM, MultipartFile companyLogoFile);
 }

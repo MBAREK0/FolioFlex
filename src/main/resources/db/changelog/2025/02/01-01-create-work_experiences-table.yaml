@@ -14,6 +14,11 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
+                  name: experience_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
                   name: user_id
                   type: bigint
                   constraints:

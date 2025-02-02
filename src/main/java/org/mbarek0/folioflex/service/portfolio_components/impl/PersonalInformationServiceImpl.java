@@ -14,7 +14,7 @@ import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
-import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.PersonalInformationRequestVM;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +34,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
     // -------------------------------- Create Personal Information --------------------------------
     @Override
-    public PersonalInformation createPersonalInformation(CreatePersonalInformationVM request) {
+    public PersonalInformation createPersonalInformation(PersonalInformationRequestVM request) {
         Language lang = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
         User user = userService.findUserById(request.getUserId());
 
@@ -157,7 +157,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
     // -------------------------------- Update Personal Information --------------------------------
     @Override
-    public PersonalInformation updatePersonalInformation(Long id, CreatePersonalInformationVM request) {
+    public PersonalInformation updatePersonalInformation(Long id, PersonalInformationRequestVM request) {
 
         PersonalInformation personalInformation = personalInformationRepository.findById(id)
                 .orElseThrow(() -> new PersonalInformationNotFoundException("Personal information not found"));

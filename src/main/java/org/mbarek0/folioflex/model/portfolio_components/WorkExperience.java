@@ -9,6 +9,7 @@ import org.mbarek0.folioflex.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,6 +23,8 @@ public class WorkExperience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private UUID experienceId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
