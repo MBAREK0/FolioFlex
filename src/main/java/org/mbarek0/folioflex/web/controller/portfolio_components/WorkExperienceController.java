@@ -199,7 +199,7 @@ public class WorkExperienceController {
             @Parameter(description = "Experience ID", required = true)
             @PathVariable UUID uuid) {
 
-        WorkExperience workExperiences = workExperienceService.getAWorkExperiencs(username, uuid,null);
+        WorkExperience workExperiences = workExperienceService.getWorkExperience(username, uuid,null);
         WorkExperienceResponseVM response = workExperienceMapper.toVM(workExperiences);
 
 
@@ -223,7 +223,7 @@ public class WorkExperienceController {
             @Parameter(description = "Language Code", required = true)
             @PathVariable String languageCode) {
 
-        WorkExperience workExperiences = workExperienceService.getAWorkExperiencs(username, uuid,languageCode);
+        WorkExperience workExperiences = workExperienceService.getWorkExperience(username, uuid,languageCode);
         WorkExperienceResponseVM response = workExperienceMapper.toVM(workExperiences);
 
 

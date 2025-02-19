@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,6 +22,16 @@ public interface EducationRepository extends JpaRepository<Education, Long> {
             "WHERE e.user = :user AND e.isDeleted = false AND e.isArchived = false")
     Integer findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(@Param("user") User user);
 
-    boolean existsByUserAndLanguageAndEducationIdAndIsDeletedFalseAndIsArchivedFalse(User user, Language lang, UUID experienceId);
+    boolean existsByUserAndLanguageAndEducationIdAndIsDeletedFalseAndIsArchivedFalse(User user, Language lang, UUID educationId);
+
+    List<Education> findAllByUserAndLanguageAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, Language language);
+
+    List<Education> findAllByUserAndEducationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(User user, UUID educationId);
+
+    List<Education> findAllByEducationIdAndIsDeletedFalseAndIsArchivedFalse(UUID uuid);
+
+    List<Education> findAllByEducationIdAndIsDeletedFalse(UUID uuid);
+
+    Optional<Education> findByUserAndEducationIdAndLanguageAndIsDeletedFalseAndIsArchivedFalse(User user, UUID uuid, Language language);
     // Other repository methods
 }

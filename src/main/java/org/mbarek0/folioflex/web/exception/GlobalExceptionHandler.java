@@ -2,11 +2,15 @@ package org.mbarek0.folioflex.web.exception;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
@@ -169,6 +173,37 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
+    // handle WorkExperienceNotBelongToUserException
+    @ExceptionHandler(WorkExperienceNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceNotBelongToUserException(
+            WorkExperienceNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle InvalidEducationDataException
+    @ExceptionHandler(InvalidEducationDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidEducationDataException(
+            InvalidEducationDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // handle EducationNotFoundException
+    @ExceptionHandler(EducationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleEducationNotFoundException(
+            EducationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle EducationNotBelongToUserException
+    @ExceptionHandler(EducationNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleEducationNotBelongToUserException(
+            EducationNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
 
     /** --------------------------------------- Global Exceptions  */
 

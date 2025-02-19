@@ -9,6 +9,7 @@ import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.*;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -44,15 +46,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         UUID experienceId = getUniqueExperienceId();
         String companyLogoUrl = s3Service.uploadFile(companyLogoFile);
 
-        final int displayOrder ;
-
-        if (!workExperienceRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user).isEmpty()) {
-
-            Integer maxDisplayOrder = workExperienceRepository.findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(user);
-            displayOrder = maxDisplayOrder == null ? 0 : maxDisplayOrder + 1;
-
-        }else displayOrder = 0;
-
+        int displayOrder = workExperienceRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user).isEmpty() ?
+                0 : workExperienceRepository.findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(user) + 1;
 
         return request.stream()
                 .map(req -> {
@@ -80,8 +75,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         workExperience.setExperienceId(experienceId);
         workExperience.setUser(user);
         workExperience.setLanguage(lang);
-        workExperience.setJobTitle(request.getJobTitle());
         workExperience.setCompanyName(request.getCompanyName());
+        workExperience.setJobTitle(request.getJobTitle());
         workExperience.setCompanyLogo(companyLogoUrl);
         workExperience.setLocation(request.getLocation());
         workExperience.setStartDate(request.getStartDate());
@@ -130,7 +125,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     }
 
     @Override
-    public WorkExperience getAWorkExperiencs(String username, UUID uuid, String s) {
+    public WorkExperience getWorkExperience(String username, UUID uuid, String s) {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
 
@@ -150,8 +145,20 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     public List<WorkExperience> updateWorkExperience(UUID uuid, List<WorkExperienceRequestVM> workExperienceVM, MultipartFile companyLogoFile) {
 
 
+        User user = userService.findUserById(workExperienceVM.get(0).getUserId());
+
         if (workExperienceVM.isEmpty())
             throw new InvalidWorkExperienceDataException("Work experience data is empty");
+
+        workExperienceVM.forEach(req -> {
+            if (req.getExperienceId() == null || req.getExperienceId().equals(UUID.fromString("00000000-0000-0000-0000-000000000000"))) {
+                throw new InvalidEducationDataException("Education ID is missing in request for language: " + req.getLanguageCode());
+            }
+            if (!req.getExperienceId().equals(uuid)) {
+                throw new InvalidEducationDataException("Education ID in request does not match the path  for language: " + req.getLanguageCode());
+            }
+        });
+
         if (workExperienceVM.get(0).getExperienceId() == null)
             throw new InvalidWorkExperienceDataException("Experience ID is required");
         if (workExperienceVM.stream().anyMatch(req -> !req.getExperienceId().equals(uuid)))
@@ -176,6 +183,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                     .orElseThrow(() -> new WorkExperienceNotFoundException("Work experience not found for language: " + workExperience.getLanguage().getLanguage()));
 
             String companyLogoUrl = companyLogoFile == null ? workExperience.getCompanyLogo()  : s3Service.uploadFile(companyLogoFile);
+
+            if (!Objects.equals(request.getUserId(), user.getId())) {
+                throw new WorkExperienceNotBelongToUserException("Experience does not belong to user");
+            }
+
 
             workExperience.setJobTitle(request.getJobTitle());
             workExperience.setCompanyName(request.getCompanyName());
