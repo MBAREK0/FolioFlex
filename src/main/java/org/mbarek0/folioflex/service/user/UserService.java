@@ -6,13 +6,9 @@ import org.springframework.data.domain.Page;
 import java.util.Optional;
 
 public interface UserService {
-    Optional<User> findByUsername(String userName);
+    User findByUsername(String userName);
 
-    Page<User> getAllUsers(int page, int size);
-
-    Page<User> searchByUsernameOrCin(String searchKeyword, int page, int size);
-
-    Optional<User> findByEmail(String email);
+    User findByEmail(String email);
 
     User findUserById(Long id);
 

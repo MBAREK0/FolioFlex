@@ -21,36 +21,23 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<User> findByUsername(String userName) {
+    public User findByUsername(String userName) {
         if (userName == null || userName.isEmpty()) {
            throw new IllegalArgumentException("Username cannot be null");
         }
-        return userRepository.findByUsernameAndDeletedFalse(userName);
+        return userRepository.findByUsernameAndDeletedFalse(userName)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
     }
 
-    @Override
-    public Page<User> getAllUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<User> userPage = userRepository.findAll(pageable);
-
-        return userPage;
-    }
 
     @Override
-    public Page<User> searchByUsernameOrCin(String searchKeyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return userRepository.findByUsernameContainingOrEmailContainingAndDeletedFalse(searchKeyword, searchKeyword, pageable);
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
+    public User findByEmail(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null");
         }
-        return userRepository.findByEmailAndDeletedFalse(email);
+        return userRepository.findByEmailAndDeletedFalse(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
