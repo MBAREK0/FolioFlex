@@ -2,7 +2,6 @@ package org.mbarek0.folioflex.web.vm.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.PersonalInformationRequestVM;
 import org.mbarek0.folioflex.web.vm.response.portfolio_components.PersonalInformationResponseVM;
@@ -10,7 +9,6 @@ import org.mbarek0.folioflex.web.vm.response.portfolio_components.PersonalInform
 @Mapper(componentModel = "spring")
 public interface PersonalInformationMapper {
 
-    PersonalInformationMapper INSTANCE = Mappers.getMapper(PersonalInformationMapper.class);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "language", ignore = true)

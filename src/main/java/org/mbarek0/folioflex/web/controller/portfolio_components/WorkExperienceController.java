@@ -231,7 +231,7 @@ public class WorkExperienceController {
     }
 
 
-    @PutMapping("/experience/{uuid}")
+    @PutMapping("/{uuid}")
     @Operation(
             summary = "Update work experience entries",
             description = "Updates multiple work experience translations sharing the same experience ID. Accepts partial updates.",
@@ -307,7 +307,7 @@ public class WorkExperienceController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/reorder")
+    @PatchMapping("/reorder")
     @Operation(
             summary = "Reorder work experiences",
             description = "Update the display order of work experiences based on drag-and-drop",
@@ -330,7 +330,7 @@ public class WorkExperienceController {
     }
 
 
-    @DeleteMapping("/experience/{uuid}")
+    @DeleteMapping("/{uuid}")
     @Operation(
             summary = "Delete work experience",
             description = "Delete a work experience by experience id",
@@ -352,7 +352,7 @@ public class WorkExperienceController {
     }
 
 
-    @PutMapping("/experience/{uuid}/archive")
+    @PatchMapping("/{uuid}/archive")
     @Operation(
             summary = "Archive work experience",
             description = "Archive a work experience by experience id",

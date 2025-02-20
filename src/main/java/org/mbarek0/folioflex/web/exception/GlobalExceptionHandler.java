@@ -2,6 +2,11 @@ package org.mbarek0.folioflex.web.exception;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.mbarek0.folioflex.web.exception.authenticationExs.AuthenticatedUserNotFoundInDatabaseException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.InvalidCertificationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotFoundException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
@@ -16,6 +21,7 @@ import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoun
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
+import org.mbarek0.folioflex.web.exception.userExs.UserIdDoesNotMatchTheAuthenticatedUserException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
@@ -77,6 +83,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    // ---------------  UserIdDoesNotMatchTheAuthenticatedUserException
+    @ExceptionHandler(UserIdDoesNotMatchTheAuthenticatedUserException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Map<String, Object>> handleUserIdDoesNotMatchTheAuthenticatedUserException(
+            UserIdDoesNotMatchTheAuthenticatedUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
 
     /** --------------------------------------- Authentication Exceptions  */
 
@@ -88,6 +101,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, request);
     }
 
+    // AuthenticatedUserNotFoundInDatabaseException
+    @ExceptionHandler(AuthenticatedUserNotFoundInDatabaseException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleAuthenticatedUserNotFoundInDatabaseException(
+            AuthenticatedUserNotFoundInDatabaseException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
 
     /** --------------------------------------- Translation Exceptions  */
 
@@ -204,6 +224,39 @@ public class GlobalExceptionHandler {
             EducationNotBelongToUserException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
+
+    // handle CertificationAlreadyExistsException
+    @ExceptionHandler(CertificationAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleCertificationAlreadyExistsException(
+            CertificationAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    // handle CertificationNotFoundException
+    @ExceptionHandler(CertificationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleCertificationNotFoundException(
+            CertificationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle InvalidCertificationDataException
+    @ExceptionHandler(InvalidCertificationDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidCertificationDataException(
+            InvalidCertificationDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // handle CertificationNotBelongToUserException
+    @ExceptionHandler(CertificationNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleCertificationNotBelongToUserException(
+            CertificationNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
 
     /** --------------------------------------- Global Exceptions  */
 

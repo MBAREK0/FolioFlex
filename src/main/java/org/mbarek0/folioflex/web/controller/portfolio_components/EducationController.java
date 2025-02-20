@@ -198,7 +198,7 @@ public class EducationController {
 
 
 
-    @PutMapping("/education/{uuid}")
+    @PutMapping("/{uuid}")
     @Operation(
             summary = "Update education entries",
             description = "Updates multiple education translations sharing the same education ID",
@@ -243,7 +243,7 @@ public class EducationController {
         return ResponseEntity.ok(updatedEducations.stream().map(educationMapper::toVM).collect(Collectors.toList()));
     }
 
-    @PutMapping("/reorder")
+    @PatchMapping("/reorder")
     @Operation(
             summary = "Reorder education entries",
             description = "Update the display order of education entries",
@@ -259,7 +259,7 @@ public class EducationController {
         return ResponseEntity.ok(reorderedEducations.stream().map(educationMapper::toVM).collect(Collectors.toList()));
     }
 
-    @DeleteMapping("/education/{uuid}")
+    @DeleteMapping("/{uuid}")
     @Operation(
             summary = "Delete education entry",
             description = "Marks an education entry as deleted",
@@ -275,7 +275,7 @@ public class EducationController {
         return ResponseEntity.ok(deletedEducations.stream().map(educationMapper::toVM).collect(Collectors.toList()));
     }
 
-    @PutMapping("/education/{uuid}/archive")
+    @PatchMapping("/{uuid}/archive")
     @Operation(
             summary = "Archive education entry",
             description = "Marks an education entry as archived",

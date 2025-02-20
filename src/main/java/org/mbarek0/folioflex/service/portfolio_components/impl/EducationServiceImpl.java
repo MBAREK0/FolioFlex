@@ -5,23 +5,20 @@ import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.Education;
 import org.mbarek0.folioflex.repository.EducationRepository;
+import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.EducationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.*;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
-import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.EducationRequestVM;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -31,11 +28,12 @@ public class EducationServiceImpl implements EducationService {
     private final UserService userService;
     private final EducationRepository educationRepository;
     private final S3Service s3Service;
+    private final AuthenticationService authenticationService;
 
     @Override
     public List<Education> createEducation(List<EducationRequestVM> requests, MultipartFile schoolLogoFile) {
         // Validate the user
-        User user = userService.findUserById(requests.get(0).getUserId());
+        User user = authenticationService.getAuthenticatedUser();
 
         // Validate the number of languages
         Long userLanguageCount = portfolioTranslationLanguageService.findLanguagesCountByUserId(user.getId());
@@ -64,6 +62,11 @@ public class EducationServiceImpl implements EducationService {
     }
 
     private Education saveEducation(EducationRequestVM request, User user, UUID educationId, String schoolLogoUrl, int displayOrder) {
+
+        if (!Objects.equals(user.getId(), request.getUserId())) {
+            throw new EducationNotBelongToUserException("Education does not belong to the user");
+        }
+
         // Validate the language
         Language language = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
         if (!portfolioTranslationLanguageService.existsByUserAndLanguage(user, language)) {
@@ -107,8 +110,7 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public List<Education> getAllEducation(String username, String languageCode) {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        User user = userService.findByUsername(username);
 
         Language language = languageCode == null ?
                 portfolioTranslationLanguageService.getPrimaryLanguage(user) :
@@ -119,16 +121,14 @@ public class EducationServiceImpl implements EducationService {
 
     @Override
     public List<Education> getAllEducation(String username, UUID educationId) {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        User user = userService.findByUsername(username);
 
         return educationRepository.findAllByUserAndEducationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, educationId);
     }
 
     @Override
     public Education getEducation(String username, UUID uuid, String languageCode) {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        User user = userService.findByUsername(username);
 
         Language language = languageCode == null ?
                 portfolioTranslationLanguageService.getPrimaryLanguage(user) :
@@ -141,10 +141,7 @@ public class EducationServiceImpl implements EducationService {
     @Override
     public List<Education> updateEducation(UUID uuid, List<EducationRequestVM> educationRequests, MultipartFile schoolLogoFile) {
         // check if the education belongs to the user
-        User user = userService.findUserById(educationRequests.get(0).getUserId());
-
-
-
+        User user = authenticationService.getAuthenticatedUser();
 
         if (educationRequests.isEmpty()) {
             throw new InvalidEducationDataException("Education data is empty");
@@ -185,7 +182,7 @@ public class EducationServiceImpl implements EducationService {
                     .findFirst()
                     .orElseThrow(() -> new EducationNotFoundException("Education not found for language: " + education.getLanguage().getLanguage()));
 
-            if (request.getUserId() != user.getId()) {
+            if (!Objects.equals(request.getUserId(), user.getId())) {
                 throw new EducationNotBelongToUserException("Education does not belong to the user");
             }
 

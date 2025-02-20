@@ -4,12 +4,10 @@ import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.web.vm.response.translation.PortfolioTranslationLanguageResponseVM;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface PortfolioTranslationLanguageMapper {
 
-    PortfolioTranslationLanguageMapper INSTANCE = Mappers.getMapper(PortfolioTranslationLanguageMapper.class);
 
     @Mapping(source = "language.language", target = "language")
     @Mapping(source = "language.code", target = "code")

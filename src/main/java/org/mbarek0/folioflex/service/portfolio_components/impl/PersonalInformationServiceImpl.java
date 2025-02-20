@@ -5,6 +5,7 @@ import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
 import org.mbarek0.folioflex.repository.PersonalInformationRepository;
+import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.PersonalInformationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
@@ -13,13 +14,15 @@ import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
-import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
+import org.mbarek0.folioflex.web.exception.userExs.UserIdDoesNotMatchTheAuthenticatedUserException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.PersonalInformationRequestVM;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -30,13 +33,17 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     private final UserService userService;
     private final PersonalInformationRepository personalInformationRepository;
     private final S3Service s3Service;
+    private final AuthenticationService authenticationService;
 
 
     // -------------------------------- Create Personal Information --------------------------------
     @Override
     public PersonalInformation createPersonalInformation(PersonalInformationRequestVM request) {
         Language lang = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
-        User user = userService.findUserById(request.getUserId());
+        User user = authenticationService.getAuthenticatedUser();
+
+        if (!Objects.equals(user.getId(), request.getUserId()))
+            throw new UserIdDoesNotMatchTheAuthenticatedUserException("User id does not match the authenticated user");
 
         if (!portfolioTranslationLanguageService.existsByUserAndLanguage(user, lang))
             throw new UserDontHaveLanguageException("User is not allowed to use this language");
@@ -105,7 +112,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         List<Language> completedLanguages = personalInformationRepository
                 .findLanguagesByUserId(userId);
 
-        return !completedLanguages.containsAll(selectedLanguages);
+        return !new HashSet<>(completedLanguages).containsAll(selectedLanguages);
     }
 
     @Override
@@ -130,9 +137,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     // -------------------------------- find Personal Information --------------------------------
     @Override
     public PersonalInformation getPersonalInformation(String username, String languageCode) {
-        User user = userService.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException("User not found")
-        );
+        User user = userService.findByUsername(username);
         Language lang ;
 
         if (languageCode == null || languageCode.isEmpty())
@@ -147,10 +152,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
     @Override
     public List<PersonalInformation> getAllPersonalInformation(String username) {
-        User user = userService.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException("User not found")
-        );
-
+        User user = userService.findByUsername(username);
         return personalInformationRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user);
     }
 

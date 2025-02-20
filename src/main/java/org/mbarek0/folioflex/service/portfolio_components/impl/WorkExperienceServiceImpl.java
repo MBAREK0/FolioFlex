@@ -5,6 +5,7 @@ import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
 import org.mbarek0.folioflex.repository.WorkExperienceRepository;
+import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
@@ -32,10 +33,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final UserService userService;
     private final WorkExperienceRepository workExperienceRepository;
     private final S3Service s3Service;
+    private final AuthenticationService authenticationService;
 
     @Override
     public List<WorkExperience> createWorkExperience(List<WorkExperienceRequestVM> request, MultipartFile companyLogoFile) {
-        User user = userService.findUserById(request.get(0).getUserId());
+        User user = authenticationService.getAuthenticatedUser();
 
         Long userLanguageCount = portfolioTranslationLanguageService.findLanguagesCountByUserId(user.getId());
 
@@ -59,6 +61,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     }
 
     private WorkExperience saveWorkExperience(WorkExperienceRequestVM request, User user, Language lang, UUID experienceId, String companyLogoUrl, int displayOrder) {
+
+        if (!Objects.equals(user.getId(), request.getUserId())) {
+            throw new WorkExperienceNotBelongToUserException("Experience does not belong to user");
+        }
 
         if (!portfolioTranslationLanguageService.existsByUserAndLanguage(user, lang)) {
             throw new UserDontHaveLanguageException("User is not allowed to use this language");
@@ -105,9 +111,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     @Override
     public List<WorkExperience> getAllWorkExperiences(String username, String languageCode) {
 
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
-
+        User user = userService.findByUsername(username);
 
         Language language = languageCode == null ?
                 portfolioTranslationLanguageService.getPrimaryLanguage(user):
@@ -118,16 +122,14 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
     @Override
     public List<WorkExperience> getAllWorkExperiences(String username, UUID experienceId) {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        User user = userService.findByUsername(username);
 
         return workExperienceRepository.findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, experienceId);
     }
 
     @Override
     public WorkExperience getWorkExperience(String username, UUID uuid, String s) {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        User user = userService.findByUsername(username);
 
         Language language = s == null ?
                 portfolioTranslationLanguageService.getPrimaryLanguage(user):
@@ -144,8 +146,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     @Override
     public List<WorkExperience> updateWorkExperience(UUID uuid, List<WorkExperienceRequestVM> workExperienceVM, MultipartFile companyLogoFile) {
 
-
-        User user = userService.findUserById(workExperienceVM.get(0).getUserId());
+        User user = authenticationService.getAuthenticatedUser();
 
         if (workExperienceVM.isEmpty())
             throw new InvalidWorkExperienceDataException("Work experience data is empty");
