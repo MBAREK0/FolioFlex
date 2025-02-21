@@ -58,6 +58,11 @@ databaseChangeLog:
                   name: description
                   type: text
               - column:
+                  name: skills
+                  type: text[]
+                  constraints:
+                    nullable: true
+              - column:
                   name: display_order
                   type: int
                   constraints:
@@ -114,3 +119,36 @@ databaseChangeLog:
             columns:
               - column:
                   name: language_code
+
+  - changeSet:
+      id: 1738368751-create-work_experience_skills-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: work_experience_skills
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: work_experience_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: skill
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: work_experience_skills
+            baseColumnNames: work_experience_id
+            referencedTableName: work_experiences
+            referencedColumnNames: id
+            constraintName: fk_work_experience_skills_experience
+            onDelete: CASCADE

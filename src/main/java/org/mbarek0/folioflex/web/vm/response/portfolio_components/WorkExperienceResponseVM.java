@@ -27,4 +27,5 @@ public class WorkExperienceResponseVM {
     private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String[] skills;
 }

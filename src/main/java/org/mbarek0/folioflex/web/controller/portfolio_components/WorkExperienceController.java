@@ -82,6 +82,7 @@ public class WorkExperienceController {
                     "startDate": "2020-01-01",
                     "endDate": "2022-12-31",
                     "description": "Worked on core platform development"
+                    "skills": ["Java", "Spring Boot", "MySQL"]
                   }
                 ]
                 """

@@ -9,6 +9,7 @@ import org.mbarek0.folioflex.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -54,6 +55,12 @@ public class WorkExperience {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @ElementCollection
+    @CollectionTable(name = "work_experience_skills", joinColumns = @JoinColumn(name = "work_experience_id"))
+    @Column(name = "skill", nullable = true)
+    private List<String> skills;
+
 
     @Column(nullable = false)
     private Integer displayOrder;

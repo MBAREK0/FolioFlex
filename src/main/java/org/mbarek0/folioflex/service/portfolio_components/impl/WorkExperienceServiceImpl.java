@@ -45,6 +45,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         if (userLanguageCount != request.size()) throw new InvalidWorkExperienceDataException("Number of languages in request does not match user's languages");
 
+
+        int expectedSize = List.of(request.get(0).getSkills()).size();
+
+        boolean isValid = request.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidWorkExperienceDataException("Number of skills in request must be the same for all languages");
+        }
+
         UUID experienceId = getUniqueExperienceId();
         String companyLogoUrl = s3Service.uploadFile(companyLogoFile);
 
@@ -93,6 +104,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         workExperience.setUpdatedAt(LocalDateTime.now());
         workExperience.setArchived(false);
         workExperience.setDeleted(false);
+        if (request.getSkills() != null)
+            workExperience.setSkills(List.of(request.getSkills()));
 
         return workExperienceRepository.save(workExperience);
     }
@@ -171,6 +184,16 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         if (workExperienceVM.size() != portfolioTranslationLanguageService.findLanguagesCountByUserId(workExperienceVM.get(0).getUserId()))
             throw new InvalidWorkExperienceDataException("Number of languages in request does not match user's languages");
 
+        int expectedSize = List.of(workExperienceVM.get(0).getSkills()).size();
+
+        boolean isValid = workExperienceVM.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidWorkExperienceDataException("Number of skills in request must be the same for all languages");
+        }
+
         List<WorkExperience> workExperiences = workExperienceRepository.findAllByExperienceIdAndIsDeletedFalseAndIsArchivedFalse(uuid);
 
         if (workExperiences.isEmpty())
@@ -188,6 +211,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
             if (!Objects.equals(request.getUserId(), user.getId())) {
                 throw new WorkExperienceNotBelongToUserException("Experience does not belong to user");
             }
+
+            // validate  experience skills
 
 
             workExperience.setJobTitle(request.getJobTitle());

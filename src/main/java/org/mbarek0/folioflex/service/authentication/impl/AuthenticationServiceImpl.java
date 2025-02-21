@@ -40,12 +40,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public TokenVM register(@Valid RegisterVM registerVM, String clientOrigin) {
 
-        userService.findByUsername(registerVM.getUsername());
-
-        userService.findByEmail(registerVM.getEmail());
+        if (userService.checkIfUserAlreadyExists(registerVM.getUsername(), registerVM.getEmail()))
+            throw new UsernameOrPasswordInvalidException("Username or email already exists.");
 
         User newUser = userVMMapper.registerVMtoUser(registerVM);
-
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());

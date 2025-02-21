@@ -16,4 +16,6 @@ public interface UserService {
 
     boolean markUserAsDeleted(Long userId);
 
+    boolean checkIfUserAlreadyExists(String username, String email);
+
 }

@@ -66,4 +66,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return true;
     }
+
+    @Override
+    public boolean checkIfUserAlreadyExists(String username, String email) {
+
+        return userRepository.existsByUsernameOrEmail(username, email);
+    }
 }
