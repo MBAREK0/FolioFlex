@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
 import org.mbarek0.folioflex.service.portfolio_components.PersonalInformationService;
 import org.mbarek0.folioflex.web.vm.mapper.PersonalInformationMapper;
-import org.mbarek0.folioflex.web.vm.request.CreatePersonalInformationVM;
-import org.mbarek0.folioflex.web.vm.response.PersonalInformationVM;
+import org.mbarek0.folioflex.web.vm.request.portfolio_components.PersonalInformationRequestVM;
+import org.mbarek0.folioflex.web.vm.response.portfolio_components.PersonalInformationResponseVM;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/portfolio/personal-information")
+@RequestMapping("/api/v1/portfolio/personal-information")
 @Tag(name = "Personal Information", description = "APIs for managing personal information")
 public class PersonalInformationController {
 
@@ -38,13 +38,13 @@ public class PersonalInformationController {
             }
     )
     public ResponseEntity<Map<String, Object>> createPersonalInformation(
-            @Valid @ModelAttribute CreatePersonalInformationVM request) {
+            @Valid @ModelAttribute PersonalInformationRequestVM request) {
 
         PersonalInformation personalInformation = personalInformationService.createPersonalInformation(request);
 
         boolean hasMissingTranslations = personalInformationService.hasMissingTranslations(request.getUserId());
 
-        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+        PersonalInformationResponseVM response = personalInformationMapper.toVM(personalInformation);
 
         List<String> missingLanguages = personalInformationService.getMissingLanguages(request.getUserId());
 
@@ -69,12 +69,12 @@ public class PersonalInformationController {
                     @ApiResponse(responseCode = "404", description = "Personal information not found")
             }
     )
-    public ResponseEntity<PersonalInformationVM> getPersonalInformation(
+    public ResponseEntity<PersonalInformationResponseVM> getPersonalInformation(
             @Parameter(description = "Username of the user", required = true)
             @PathVariable String username) {
 
         PersonalInformation personalInformation = personalInformationService.getPersonalInformation(username, null);
-        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+        PersonalInformationResponseVM response = personalInformationMapper.toVM(personalInformation);
 
         return ResponseEntity.ok(response);
     }
@@ -88,14 +88,14 @@ public class PersonalInformationController {
                     @ApiResponse(responseCode = "404", description = "Personal information not found")
             }
     )
-    public ResponseEntity<PersonalInformationVM> getPersonalInformation(
+    public ResponseEntity<PersonalInformationResponseVM> getPersonalInformation(
             @Parameter(description = "Username of the user", required = true)
             @PathVariable String username,
             @Parameter(description = "Language code , if not provided, will return data by all languages")
             @PathVariable String languageCode) {
 
         PersonalInformation personalInformation = personalInformationService.getPersonalInformation(username, languageCode);
-        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+        PersonalInformationResponseVM response = personalInformationMapper.toVM(personalInformation);
 
         return ResponseEntity.ok(response);
     }
@@ -109,12 +109,12 @@ public class PersonalInformationController {
                     @ApiResponse(responseCode = "404", description = "Personal information not found")
             }
     )
-    public ResponseEntity<List<PersonalInformationVM>> getallPersonalInformation(
+    public ResponseEntity<List<PersonalInformationResponseVM>> getallPersonalInformation(
             @Parameter(description = "Username of the user", required = true)
             @PathVariable String username) {
 
         List<PersonalInformation> personalInformation = personalInformationService.getAllPersonalInformation(username);
-        List<PersonalInformationVM> response = personalInformation.stream()
+        List<PersonalInformationResponseVM> response = personalInformation.stream()
                 .map(personalInformationMapper::toVM)
                 .toList();
 
@@ -130,13 +130,13 @@ public class PersonalInformationController {
                     @ApiResponse(responseCode = "400", description = "Invalid input")
             }
     )
-    public ResponseEntity<PersonalInformationVM> updatePersonalInformation(
+    public ResponseEntity<PersonalInformationResponseVM> updatePersonalInformation(
             @Parameter(description = "Personal information ID", required = true)
             @PathVariable Long id,
-            @Valid @RequestBody @ModelAttribute CreatePersonalInformationVM request) {
+            @Valid @RequestBody @ModelAttribute PersonalInformationRequestVM request) {
 
         PersonalInformation personalInformation = personalInformationService.updatePersonalInformation(id, request);
-        PersonalInformationVM response = personalInformationMapper.toVM(personalInformation);
+        PersonalInformationResponseVM response = personalInformationMapper.toVM(personalInformation);
 
         return ResponseEntity.ok(response);
     }

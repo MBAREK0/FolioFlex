@@ -26,4 +26,6 @@ public interface PortfolioTranslationLanguageRepository extends JpaRepository<Po
     List<Language> findLanguagesByUserId(@Param("userId") Long userId);
 
     Optional<PortfolioTranslationLanguage> findByUserAndIsPrimaryAndIsDeletedFalse(User user, boolean b);
+
+    long countByUserIdAndIsDeletedFalse(Long user);
 }

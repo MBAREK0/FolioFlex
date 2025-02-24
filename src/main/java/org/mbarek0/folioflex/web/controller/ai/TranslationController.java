@@ -2,8 +2,8 @@ package org.mbarek0.folioflex.web.controller.ai;
 
 import jakarta.validation.Valid;
 import org.mbarek0.folioflex.service.ai.GeminiTranslationService;
-import org.mbarek0.folioflex.web.vm.request.TranslatorVm;
-import org.mbarek0.folioflex.web.vm.response.TextTranslatedVm;
+import org.mbarek0.folioflex.web.vm.request.translation.TranslatorVm;
+import org.mbarek0.folioflex.web.vm.response.translation.TextTranslatedVm;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/ai/translate")
+@RequestMapping("/api/v1/ai/translate")
 @Tag(name = "Translation API", description = "API for text translation using Gemini AI")
 public class TranslationController {
 

@@ -2,13 +2,26 @@ package org.mbarek0.folioflex.web.exception;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.mbarek0.folioflex.web.exception.authenticationExs.AuthenticatedUserNotFoundInDatabaseException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.InvalidCertificationDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
+import org.mbarek0.folioflex.web.exception.userExs.UserIdDoesNotMatchTheAuthenticatedUserException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
@@ -70,6 +83,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    // ---------------  UserIdDoesNotMatchTheAuthenticatedUserException
+    @ExceptionHandler(UserIdDoesNotMatchTheAuthenticatedUserException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Map<String, Object>> handleUserIdDoesNotMatchTheAuthenticatedUserException(
+            UserIdDoesNotMatchTheAuthenticatedUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
 
     /** --------------------------------------- Authentication Exceptions  */
 
@@ -81,6 +101,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, request);
     }
 
+    // AuthenticatedUserNotFoundInDatabaseException
+    @ExceptionHandler(AuthenticatedUserNotFoundInDatabaseException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleAuthenticatedUserNotFoundInDatabaseException(
+            AuthenticatedUserNotFoundInDatabaseException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
 
     /** --------------------------------------- Translation Exceptions  */
 
@@ -118,6 +145,7 @@ public class GlobalExceptionHandler {
 
     // ---------------------------------------- Portfolio Exceptions
 
+    // Handle PersonalInformationAlreadyExistsException
     @ExceptionHandler(PersonalInformationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Map<String, Object>> handlePersonalInformationAlreadyExistsException(
@@ -125,6 +153,7 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
+    // Handle InvalidImageUrlException
     @ExceptionHandler(InvalidImageUrlException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Map<String, Object>> handleInvalidImageUrlException(
@@ -132,11 +161,100 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
     }
 
+    // Handle PersonalInformationNotFoundException
     @ExceptionHandler(PersonalInformationNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Map<String, Object>> handlePersonalInformationNotFoundException(
             PersonalInformationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // Handle InvalidWorkExperienceDataException
+    @ExceptionHandler(InvalidWorkExperienceDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidWorkExperienceDataException(
+            InvalidWorkExperienceDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // Handle WorkExperienceNotFoundException
+    @ExceptionHandler(WorkExperienceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceNotFoundException(
+            WorkExperienceNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // Handle WorkExperienceAlreadyExistsException
+    @ExceptionHandler(WorkExperienceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceAlreadyExistsException(
+            WorkExperienceAlreadyExistsException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    // handle WorkExperienceNotBelongToUserException
+    @ExceptionHandler(WorkExperienceNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleWorkExperienceNotBelongToUserException(
+            WorkExperienceNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle InvalidEducationDataException
+    @ExceptionHandler(InvalidEducationDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidEducationDataException(
+            InvalidEducationDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // handle EducationNotFoundException
+    @ExceptionHandler(EducationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleEducationNotFoundException(
+            EducationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle EducationNotBelongToUserException
+    @ExceptionHandler(EducationNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleEducationNotBelongToUserException(
+            EducationNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle CertificationAlreadyExistsException
+    @ExceptionHandler(CertificationAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleCertificationAlreadyExistsException(
+            CertificationAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    // handle CertificationNotFoundException
+    @ExceptionHandler(CertificationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleCertificationNotFoundException(
+            CertificationNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle InvalidCertificationDataException
+    @ExceptionHandler(InvalidCertificationDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidCertificationDataException(
+            InvalidCertificationDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // handle CertificationNotBelongToUserException
+    @ExceptionHandler(CertificationNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleCertificationNotBelongToUserException(
+            CertificationNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
 
@@ -160,6 +278,7 @@ public class GlobalExceptionHandler {
 
 
 
+    // Handle MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
             MethodArgumentNotValidException ex, WebRequest request) {
@@ -191,6 +310,8 @@ public class GlobalExceptionHandler {
 
         return responseEntity;
     }
+
+
     // Helper method to build the error response
     private ResponseEntity<Map<String, Object>> buildErrorResponse(
             RuntimeException ex, HttpStatus status, WebRequest request) {

@@ -10,12 +10,15 @@ import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.authentication.JwtService;
 import org.mbarek0.folioflex.service.email.EmailService;
 import org.mbarek0.folioflex.service.user.UserService;
-import org.mbarek0.folioflex.web.exception.userExs.UserNameAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.authenticationExs.AuthenticatedUserNotFoundInDatabaseException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.exception.userExs.UsernameOrPasswordInvalidException;
 import org.mbarek0.folioflex.web.vm.mapper.UserVMMapper;
-import org.mbarek0.folioflex.web.vm.request.RegisterVM;
-import org.mbarek0.folioflex.web.vm.response.TokenVM;
+import org.mbarek0.folioflex.web.vm.request.authentication.RegisterVM;
+import org.mbarek0.folioflex.web.vm.response.authentication.TokenVM;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,18 +40,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public TokenVM register(@Valid RegisterVM registerVM, String clientOrigin) {
 
-        userService.findByUsername(registerVM.getUsername())
-                .ifPresent(existingUser -> {
-                    throw new UserNameAlreadyExistsException("Username already exists");
-                });
-
-        userService.findByEmail(registerVM.getEmail())
-                .ifPresent(existingUser -> {
-                    throw new UserNameAlreadyExistsException("Email already exists");
-                });
+        if (userService.checkIfUserAlreadyExists(registerVM.getUsername(), registerVM.getEmail()))
+            throw new UsernameOrPasswordInvalidException("Username or email already exists.");
 
         User newUser = userVMMapper.registerVMtoUser(registerVM);
-
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
@@ -87,6 +82,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new UsernameOrPasswordInvalidException("Invalid credentials."));
     }
 
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            return userRepository.findByUsernameAndDeletedFalse(userDetails.getUsername())
+                    .orElseThrow(() -> new AuthenticatedUserNotFoundInDatabaseException("Authenticated user not found in database"));
+        }
+        throw new RuntimeException("No authenticated user found");
+    }
 
     @Override
     public TokenVM refresh(String refreshToken) {

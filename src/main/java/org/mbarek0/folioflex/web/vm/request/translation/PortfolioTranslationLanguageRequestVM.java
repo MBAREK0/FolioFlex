@@ -1,8 +1,8 @@
-package org.mbarek0.folioflex.web.vm.request;
+package org.mbarek0.folioflex.web.vm.request.translation;
 
 import jakarta.validation.constraints.NotNull;
 
-public class CreatePortfolioTranslationLanguageVM {
+public class PortfolioTranslationLanguageRequestVM {
 
     @NotNull(message = "Language is required")
     private Long languageId;
@@ -11,11 +11,11 @@ public class CreatePortfolioTranslationLanguageVM {
     private Long userId;
 
     // No-argument constructor (required for deserialization)
-    public CreatePortfolioTranslationLanguageVM() {
+    public PortfolioTranslationLanguageRequestVM() {
     }
 
     // Parameterized constructor (optional, for convenience)
-    public CreatePortfolioTranslationLanguageVM(Long languageId, Long userId) {
+    public PortfolioTranslationLanguageRequestVM(Long languageId, Long userId) {
         this.languageId = languageId;
         this.userId = userId;
     }

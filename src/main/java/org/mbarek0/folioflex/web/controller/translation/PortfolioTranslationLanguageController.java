@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.web.vm.mapper.PortfolioTranslationLanguageMapper;
-import org.mbarek0.folioflex.web.vm.request.CreatePortfolioTranslationLanguageVM;
-import org.mbarek0.folioflex.web.vm.response.PortfolioTranslationLanguageVM;
+import org.mbarek0.folioflex.web.vm.request.translation.PortfolioTranslationLanguageRequestVM;
+import org.mbarek0.folioflex.web.vm.response.translation.PortfolioTranslationLanguageResponseVM;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/portfolio/translation/language")
+@RequestMapping("/api/v1/portfolio/translation/language")
 @Tag(name = "Portfolio Translation Language", description = "APIs for managing portfolio translation languages")
 public class PortfolioTranslationLanguageController {
 
@@ -42,7 +42,7 @@ public class PortfolioTranslationLanguageController {
                     description = "List of portfolio translation languages to create",
                     required = true
             )
-            @Valid @RequestBody List<CreatePortfolioTranslationLanguageVM> request) {
+            @Valid @RequestBody List<PortfolioTranslationLanguageRequestVM> request) {
 
 
         portfolioTranslationLanguageService.save(request);
@@ -79,7 +79,7 @@ public class PortfolioTranslationLanguageController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    public ResponseEntity<List<PortfolioTranslationLanguageVM>> getAllPortfolioTranslationLanguagesForUser(
+    public ResponseEntity<List<PortfolioTranslationLanguageResponseVM>> getAllPortfolioTranslationLanguagesForUser(
             @Parameter(
                     name = "userId",
                     description = "User ID",
@@ -88,7 +88,7 @@ public class PortfolioTranslationLanguageController {
             )
             @PathVariable Long userId) {
 
-        List<PortfolioTranslationLanguageVM> portfolioTranslationLanguages = portfolioTranslationLanguageService.getAllPortfolioTranslationLanguagesForUser(userId).stream()
+        List<PortfolioTranslationLanguageResponseVM> portfolioTranslationLanguages = portfolioTranslationLanguageService.getAllPortfolioTranslationLanguagesForUser(userId).stream()
                 .map(portfolioTranslationLanguageMapper::toVM)
                 .toList();
 

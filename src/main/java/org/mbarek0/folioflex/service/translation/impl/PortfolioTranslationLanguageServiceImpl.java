@@ -13,7 +13,7 @@ import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoun
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
-import org.mbarek0.folioflex.web.vm.request.CreatePortfolioTranslationLanguageVM;
+import org.mbarek0.folioflex.web.vm.request.translation.PortfolioTranslationLanguageRequestVM;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     private final UserService userService;
 
     @Override
-    public List<PortfolioTranslationLanguage> save(List<CreatePortfolioTranslationLanguageVM> createPortfolioTranslationLanguageVMs) {
+    public List<PortfolioTranslationLanguage> save(List<PortfolioTranslationLanguageRequestVM> createPortfolioTranslationLanguageVMs) {
 
         if (createPortfolioTranslationLanguageVMs == null) {
             throw new InvalidInputException("createPortfolioTranslationLanguageVMs is null");
@@ -53,7 +53,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
 
             languages.add(englishLanguage);
 
-            createPortfolioTranslationLanguageVMs.add(new CreatePortfolioTranslationLanguageVM(
+            createPortfolioTranslationLanguageVMs.add(new PortfolioTranslationLanguageRequestVM(
                     englishLanguage.getId(),
                     createPortfolioTranslationLanguageVMs.get(0).getUserId()
             ));
@@ -142,6 +142,11 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
                 .orElseThrow(() -> new InvalidInputException("Primary portfolio translation language not found"));
 
         return pTL.getLanguage();
+    }
+
+    @Override
+    public Long findLanguagesCountByUserId(Long id) {
+        return portfolioTranslationLanguageRepository.countByUserIdAndIsDeletedFalse(id);
     }
 
 

@@ -11,3 +11,9 @@ databaseChangeLog:
        file: db/changelog/2025/01/28-04-add-unique-primary-language-per-user.yaml
   - include:
       file: db/changelog/2025/01/31-01-create-personal_information-table.yaml
+  - include:
+      file: db/changelog/2025/02/01-01-create-work_experiences-table.yaml
+  - include:
+      file: db/changelog/2025/02/02-01-create-educations-table.yaml
+  - include:
+      file: db/changelog/2025/02/19-01-create-certifications-table.yaml

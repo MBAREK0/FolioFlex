@@ -10,7 +10,6 @@ import org.mbarek0.folioflex.model.enums.Role;
 import org.mbarek0.folioflex.service.authentication.JwtService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.userExs.RooleNotFoundException;
-import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +47,8 @@ public class JwtServiceImpl implements JwtService {
         // put permissions
         claims.put("permissions", extractRole(username).getAuthorities());
         claims.put("username", username);
-        userService.findByUsername(username).ifPresent(user -> claims.put("id", user.getId()));
+        User user  =  userService.findByUsername(username);
+        claims.put("id", user.getId());
 
         return Jwts
                 .builder()
@@ -111,8 +111,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Role extractRole(String username)  {
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userService.findByUsername(username);
 
         Role role = user.getRole();
         if (role == null) {
