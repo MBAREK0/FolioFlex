@@ -36,4 +36,7 @@ public class CertificationRequestVM {
     private LocalDate issueDate;
 
     private LocalDate expirationDate;
+
+    private String[] skills;
+
 }

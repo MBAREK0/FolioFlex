@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -50,6 +47,15 @@ public class CertificationServiceImpl implements CertificationService {
         int displayOrder = certificationRepository.findAllByUserAndIsDeletedFalseAndIsArchivedFalse(user).isEmpty() ?
                 0 : certificationRepository.findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(user) + 1;
 
+        int expectedSize = List.of(request.get(0).getSkills()).size();
+
+        boolean isValid = request.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidCertificationDataException("Number of skills in request must be the same for all languages");
+        }
         return request.stream()
                 .map(req -> {
                     Language lang = portfolioTranslationLanguageService.getLanguageByCode(req.getLanguageCode());
@@ -88,6 +94,9 @@ public class CertificationServiceImpl implements CertificationService {
         certification.setUpdatedAt(LocalDateTime.now());
         certification.setArchived(false);
         certification.setDeleted(false);
+        if (request.getSkills() != null) {
+            certification.setSkills(List.of(request.getSkills()));
+        }
 
         return certificationRepository.save(certification);
     }
@@ -115,7 +124,10 @@ public class CertificationServiceImpl implements CertificationService {
     public List<Certification> getAllCertifications(String username, UUID certificationId) {
         User user = userService.findByUsername(username);
 
-        return certificationRepository.findAllByUserAndCertificationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, certificationId);
+        List<Certification> certifications =  certificationRepository.findAllByUserAndCertificationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, certificationId);
+        if (certifications.isEmpty())
+            throw new CertificationNotFoundException("Certification not found with certification ID: " + certificationId);
+        return certifications;
     }
 
     @Override
@@ -154,6 +166,16 @@ public class CertificationServiceImpl implements CertificationService {
         if (certifications.isEmpty())
             throw new CertificationNotFoundException("Certification not found with certification ID: " + uuid);
 
+        int expectedSize = List.of(certificationVM.get(0).getSkills()).size();
+
+        boolean isValid = certificationVM.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidCertificationDataException("Number of skills in request must be the same for all languages");
+        }
+
         certifications.forEach(certification -> {
             CertificationRequestVM request = certificationVM.stream()
                     .filter(req -> req.getLanguageCode().equals(certification.getLanguage().getCode()))
@@ -171,6 +193,8 @@ public class CertificationServiceImpl implements CertificationService {
             certification.setCertificationImage(certificationImageUrl);
             certification.setIssueDate(request.getIssueDate());
             certification.setExpirationDate(request.getExpirationDate());
+            if (request.getSkills() != null)
+                certification.setSkills(new ArrayList<>(List.of(request.getSkills())));
             certification.setUpdatedAt(LocalDateTime.now());
         });
 

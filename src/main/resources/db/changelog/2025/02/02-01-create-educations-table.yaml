@@ -111,3 +111,35 @@ databaseChangeLog:
             columns:
               - column:
                   name: language_code
+  - changeSet:
+      id: 1738614189-create-education_skills-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: education_skills
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: education_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: skill
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: education_skills
+            baseColumnNames: education_id
+            referencedTableName: educations
+            referencedColumnNames: id
+            constraintName: fk_education_skills_education
+            onDelete: CASCADE

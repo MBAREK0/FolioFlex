@@ -11,6 +11,7 @@ import org.mbarek0.folioflex.service.portfolio_components.EducationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.*;
+import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.EducationRequestVM;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
@@ -31,7 +32,7 @@ public class EducationServiceImpl implements EducationService {
     private final AuthenticationService authenticationService;
 
     @Override
-    public List<Education> createEducation(List<EducationRequestVM> requests, MultipartFile schoolLogoFile) {
+    public List<Education> createEducation(List<EducationRequestVM> request, MultipartFile schoolLogoFile) {
         // Validate the user
         User user = authenticationService.getAuthenticatedUser();
 
@@ -41,12 +42,23 @@ public class EducationServiceImpl implements EducationService {
             throw new UserDontHaveLanguageException("User does not have any languages");
         }
 
-        if (userLanguageCount != requests.size()) {
+        if (userLanguageCount != request.size()) {
             throw new InvalidEducationDataException("Number of languages in request does not match user's languages");
         }
 
         // Generate a unique education ID
         UUID educationId = getUniqueEducationId();
+
+
+        int expectedSize = List.of(request.get(0).getSkills()).size();
+
+        boolean isValid = request.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidEducationDataException("Number of skills in request must be the same for all languages");
+        }
 
         // Upload the school logo to S3
         String schoolLogoUrl = s3Service.uploadFile(schoolLogoFile);
@@ -56,8 +68,8 @@ public class EducationServiceImpl implements EducationService {
                 0 : educationRepository.findMaxDisplayOrderByUserAndIsDeletedFalseAndIsArchivedFalse(user) + 1;
 
         // Save each education entry
-        return requests.stream()
-                .map(request -> saveEducation(request, user, educationId, schoolLogoUrl, displayOrder))
+        return request.stream()
+                .map(req -> saveEducation(req, user, educationId, schoolLogoUrl, displayOrder))
                 .toList();
     }
 
@@ -91,10 +103,12 @@ public class EducationServiceImpl implements EducationService {
         education.setStartDate(request.getStartDate());
         education.setEndDate(request.getEndDate());
         education.setDisplayOrder(displayOrder);
+        education.setSkills(List.of(request.getSkills()));
         education.setDeleted(false);
         education.setArchived(false);
         education.setCreatedAt(LocalDateTime.now());
         education.setUpdatedAt(LocalDateTime.now());
+
 
         return educationRepository.save(education);
     }
@@ -123,7 +137,12 @@ public class EducationServiceImpl implements EducationService {
     public List<Education> getAllEducation(String username, UUID educationId) {
         User user = userService.findByUsername(username);
 
-        return educationRepository.findAllByUserAndEducationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, educationId);
+        List<Education>  educations =  educationRepository.findAllByUserAndEducationIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, educationId);
+        if (educations.isEmpty()) {
+            throw new EducationNotFoundException("Education not found with education ID: " + educationId);
+        }
+
+        return educations;
     }
 
     @Override
@@ -174,6 +193,16 @@ public class EducationServiceImpl implements EducationService {
             throw new EducationNotFoundException("Education not found with education ID: " + uuid);
         }
 
+        int expectedSize = List.of(educationRequests.get(0).getSkills()).size();
+
+        boolean isValid = educationRequests.stream()
+                .skip(1)
+                .allMatch(r -> List.of(r.getSkills()).size() == expectedSize);
+
+        if (!isValid) {
+            throw new InvalidEducationDataException("Number of skills in request must be the same for all languages");
+        }
+
         String schoolLogoUrl = schoolLogoFile != null ? s3Service.uploadFile(schoolLogoFile) : educations.get(0).getSchoolLogo();
 
         educations.forEach(education -> {
@@ -192,10 +221,12 @@ public class EducationServiceImpl implements EducationService {
             education.setFieldOfStudy(request.getFieldOfStudy());
             education.setStartDate(request.getStartDate());
             education.setEndDate(request.getEndDate());
+            if(request.getSkills() != null)
+                education.setSkills(new ArrayList<>(List.of(request.getSkills())));
             education.setUpdatedAt(LocalDateTime.now());
         });
-
-        return educationRepository.saveAll(educations);
+        educations.forEach(education -> educationRepository.save(education));
+        return educations;
     }
 
     @Override

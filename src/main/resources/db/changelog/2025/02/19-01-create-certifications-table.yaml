@@ -106,3 +106,35 @@ databaseChangeLog:
             columns:
               - column:
                   name: language_code
+  - changeSet:
+      id: 1740011739-create-certification_skills-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: certification_skills
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: certification_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: skill
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: certification_skills
+            baseColumnNames: certification_id
+            referencedTableName: certifications
+            referencedColumnNames: id
+            constraintName: fk_certification_skills_certification
+            onDelete: CASCADE

@@ -121,7 +121,7 @@ databaseChangeLog:
                   name: language_code
 
   - changeSet:
-      id: 1738368751-create-work_experience_skills-table
+      id: 1738428731-create-work_experience_skills-table
       author: MBAREK0
       changes:
         - createTable:

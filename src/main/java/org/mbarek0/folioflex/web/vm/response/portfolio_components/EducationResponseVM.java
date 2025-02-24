@@ -21,7 +21,9 @@ public class EducationResponseVM {
     private String fieldOfStudy;
     private LocalDate startDate;
     private LocalDate endDate;
+    private String[] skills;
     private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 }

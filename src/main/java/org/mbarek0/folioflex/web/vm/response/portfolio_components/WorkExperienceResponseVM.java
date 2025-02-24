@@ -24,8 +24,9 @@ public class WorkExperienceResponseVM {
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
+    private String[] skills;
     private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String[] skills;
+
 }

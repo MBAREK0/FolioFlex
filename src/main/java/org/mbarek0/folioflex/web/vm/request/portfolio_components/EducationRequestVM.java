@@ -38,4 +38,7 @@ public class EducationRequestVM {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private String[] skills;
+
 }

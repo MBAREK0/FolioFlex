@@ -10,7 +10,6 @@ import org.mbarek0.folioflex.service.aws.S3Service;
 import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
-import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.*;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
@@ -20,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -137,16 +133,19 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     public List<WorkExperience> getAllWorkExperiences(String username, UUID experienceId) {
         User user = userService.findByUsername(username);
 
-        return workExperienceRepository.findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, experienceId);
+        List<WorkExperience>  workExperiences = workExperienceRepository.findAllByUserAndExperienceIdAndIsDeletedFalseAndIsArchivedFalseOrderByDisplayOrder(user, experienceId);
+        if (workExperiences.isEmpty())
+            throw new WorkExperienceNotFoundException("Work experience not found with experience ID: " + experienceId);
+        return workExperiences;
     }
 
     @Override
-    public WorkExperience getWorkExperience(String username, UUID uuid, String s) {
+    public WorkExperience getWorkExperience(String username, UUID uuid, String languageCode) {
         User user = userService.findByUsername(username);
 
-        Language language = s == null ?
+        Language language = languageCode == null ?
                 portfolioTranslationLanguageService.getPrimaryLanguage(user):
-                portfolioTranslationLanguageService.getLanguageByCode(s);
+                portfolioTranslationLanguageService.getLanguageByCode(languageCode);
 
         return workExperienceRepository.findByUserAndExperienceIdAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, uuid, language)
                 .orElseThrow(() -> new WorkExperienceNotFoundException("Work experience not found"));
@@ -166,10 +165,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         workExperienceVM.forEach(req -> {
             if (req.getExperienceId() == null || req.getExperienceId().equals(UUID.fromString("00000000-0000-0000-0000-000000000000"))) {
-                throw new InvalidEducationDataException("Education ID is missing in request for language: " + req.getLanguageCode());
+                throw new InvalidWorkExperienceDataException("Experience ID is missing in request for language: " + req.getLanguageCode());
             }
             if (!req.getExperienceId().equals(uuid)) {
-                throw new InvalidEducationDataException("Education ID in request does not match the path  for language: " + req.getLanguageCode());
+                throw new InvalidWorkExperienceDataException("Experience ID in request does not match the path  for language: " + req.getLanguageCode());
             }
         });
 
@@ -212,9 +211,6 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 throw new WorkExperienceNotBelongToUserException("Experience does not belong to user");
             }
 
-            // validate  experience skills
-
-
             workExperience.setJobTitle(request.getJobTitle());
             workExperience.setCompanyName(request.getCompanyName());
             workExperience.setCompanyLogo(companyLogoUrl);
@@ -222,6 +218,8 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
             workExperience.setStartDate(request.getStartDate());
             workExperience.setEndDate(request.getEndDate());
             workExperience.setDescription(request.getDescription());
+            if(request.getSkills() != null)
+                workExperience.setSkills(new ArrayList<>(List.of(request.getSkills())));
             workExperience.setUpdatedAt(LocalDateTime.now());
 
         });

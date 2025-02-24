@@ -9,6 +9,7 @@ import org.mbarek0.folioflex.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -48,6 +49,11 @@ public class Certification {
 
     @Column(name = "expiration_date")
     private LocalDate expirationDate;
+
+    @ElementCollection
+    @CollectionTable(name = "certification_skills", joinColumns = @JoinColumn(name = "certification_id"))
+    @Column(name = "skill", nullable = true)
+    private List<String> skills;
 
     @Column(nullable = false)
     private Integer displayOrder;

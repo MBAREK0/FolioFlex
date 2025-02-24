@@ -21,6 +21,7 @@ public class CertificationResponseVM {
     private String certificationImage;
     private LocalDate issueDate;
     private LocalDate expirationDate;
+    private String[] skills;
     private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
