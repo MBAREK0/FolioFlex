@@ -6,28 +6,27 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.mbarek0.folioflex.model.Language;
 import org.mbarek0.folioflex.model.User;
+import org.mbarek0.folioflex.model.enums.IconType;
+import org.mbarek0.folioflex.model.enums.Role;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode
-@Table(name = "educations")
-public class Education {
+@Table(name = "skills")
+public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "education_id", nullable = false)
-    private UUID educationId;
+    private UUID skillId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,28 +36,15 @@ public class Education {
     @JoinColumn(name = "language_code", referencedColumnName = "code", nullable = false)
     private Language language;
 
-    @Column(name = "school_name", nullable = false)
-    private String schoolName;
+    @Column(name = "skill_name", nullable = false)
+    private String skillName;
 
-    @Column(name = "school_logo")
-    private String schoolLogo;
+    @Column(name = "icon_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private IconType iconType;
 
-    @Column(nullable = false)
-    private String degree;
-
-    @Column(name = "field_of_study", nullable = false)
-    private String fieldOfStudy;
-
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
-
-    @Column(name = "end_date")
-    private LocalDate endDate;
-
-    @ElementCollection
-    @CollectionTable(name = "education_skills", joinColumns = @JoinColumn(name = "education_id"))
-    @Column(name = "skill", nullable = true)
-    private List<String> skills;
+    @Column(name = "icon_value", nullable = false)
+    private String iconValue;
 
     @Column(nullable = false)
     private Integer displayOrder;
@@ -76,4 +62,11 @@ public class Education {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (skillId == null) {
+            skillId = UUID.randomUUID();
+        }
+    }
 }
