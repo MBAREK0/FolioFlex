@@ -12,6 +12,7 @@ import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageSer
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotBelongToUser;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserIdDoesNotMatchTheAuthenticatedUserException;
@@ -165,14 +166,15 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
                 .orElseThrow(() -> new PersonalInformationNotFoundException("Personal information not found"));
 
         User user = userService.findUserById(request.getUserId());
+        User authenticatedUser = authenticationService.getAuthenticatedUser();
         Language lang = portfolioTranslationLanguageService.getLanguageByCode(request.getLanguageCode());
 
         if (!portfolioTranslationLanguageService.existsByUserAndLanguage(user, lang)) {
             throw new UserDontHaveLanguageException("User is not allowed to use this language");
         }
 
-        if (!personalInformation.getUser().equals(user)) {
-            throw new PersonalInformationNotFoundException("Personal information not found");
+        if (!personalInformation.getUser().equals(user) || !authenticatedUser.equals(user)) {
+            throw new PersonalInformationNotBelongToUser("Personal information does not belong to user");
         }
 
         Optional<PersonalInformation> existingInfo = personalInformationRepository

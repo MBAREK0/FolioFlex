@@ -12,11 +12,16 @@ import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.EducationNo
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.InvalidEducationDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.InvalidImageUrlException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotBelongToUser;
 import org.mbarek0.folioflex.web.exception.portfolioExs.personal_informationExs.PersonalInformationNotFoundException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotFoundException;
+import org.mbarek0.folioflex.web.exception.skillExs.InvalidSkillDataException;
+import org.mbarek0.folioflex.web.exception.skillExs.SkillAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.skillExs.SkillNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.skillExs.SkillNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
@@ -169,6 +174,15 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    // Handle PersonalInformationNotBelongToUser
+    @ExceptionHandler(PersonalInformationNotBelongToUser.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handlePersonalInformationNotBelongToUser(
+            PersonalInformationNotBelongToUser ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+
     // Handle InvalidWorkExperienceDataException
     @ExceptionHandler(InvalidWorkExperienceDataException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -257,6 +271,37 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    // handle InvalidSkillDataException
+    @ExceptionHandler(InvalidSkillDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidSkillDataException(
+            InvalidSkillDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // handle SkillAlreadyExistsException
+    @ExceptionHandler(SkillAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleSkillAlreadyExistsException(
+            SkillAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    // handle SkillNotBelongToUserException
+    @ExceptionHandler(SkillNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleSkillNotBelongToUserException(
+            SkillNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle SkillNotFoundException
+    @ExceptionHandler(SkillNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleSkillNotFoundException(
+            SkillNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
 
     /** --------------------------------------- Global Exceptions  */
 

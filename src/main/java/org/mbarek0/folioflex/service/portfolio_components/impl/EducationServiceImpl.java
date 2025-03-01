@@ -271,6 +271,11 @@ public class EducationServiceImpl implements EducationService {
             throw new EducationNotFoundException("Education not found with education ID: " + uuid);
         }
 
+        User user = authenticationService.getAuthenticatedUser();
+        if (educations.stream().anyMatch(education -> !education.getUser().equals(user))) {
+            throw new EducationNotBelongToUserException("Education does not belong to the user");
+        }
+
         educations.forEach(education -> {
             education.setDeleted(true);
             education.setUpdatedAt(LocalDateTime.now());

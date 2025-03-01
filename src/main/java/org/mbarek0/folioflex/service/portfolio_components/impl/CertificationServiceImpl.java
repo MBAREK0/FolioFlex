@@ -237,8 +237,13 @@ public class CertificationServiceImpl implements CertificationService {
     public List<Certification> deleteCertification(UUID uuid) {
         List<Certification> certifications = certificationRepository.findAllByCertificationIdAndIsDeletedFalse(uuid);
 
+        User user = authenticationService.getAuthenticatedUser();
+
         if (certifications.isEmpty())
             throw new CertificationNotFoundException("Certification not found with certification ID: " + uuid);
+
+        if (certifications.stream().anyMatch(cert -> !cert.getUser().equals(user)))
+            throw new CertificationNotBelongToUserException("Certification does not belong to user");
 
         certifications.forEach(certification -> {
             certification.setDeleted(true);

@@ -6,9 +6,11 @@ import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.LanguageRepository;
 import org.mbarek0.folioflex.repository.PortfolioTranslationLanguageRepository;
+import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.InvalidInputException;
+import org.mbarek0.folioflex.web.exception.authenticationExs.UnauthorizedException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
@@ -28,6 +30,7 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
     private final PortfolioTranslationLanguageRepository portfolioTranslationLanguageRepository;
     private final LanguageRepository languageRepository;
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @Override
     public List<PortfolioTranslationLanguage> save(List<PortfolioTranslationLanguageRequestVM> createPortfolioTranslationLanguageVMs) {
@@ -36,9 +39,21 @@ public class PortfolioTranslationLanguageServiceImpl implements PortfolioTransla
             throw new InvalidInputException("createPortfolioTranslationLanguageVMs is null");
         }
 
-        if (portfolioTranslationLanguageRepository.findAll().toArray().length > 0) {
-            throw new InvalidInputException("Portfolio translation languages already exist try to insert one by one");
+        // Retrieve the user ID from the first request (assuming all belong to the same user)
+        Long userId = createPortfolioTranslationLanguageVMs.get(0).getUserId();
+
+        // Ensure the authenticated user is the same as the requested user
+        User authenticatedUser = authenticationService.getAuthenticatedUser();
+        if (!authenticatedUser.getId().equals(userId)) {
+            throw new UnauthorizedException("You are not allowed to modify this user's languages.");
         }
+
+        // Fetch user's existing portfolio translation languages
+        List<PortfolioTranslationLanguage> userLanguages = portfolioTranslationLanguageRepository.findByUserId(userId);
+        if (!userLanguages.isEmpty()) {
+            throw new InvalidInputException("Portfolio translation languages for this user already exist. Try inserting one by one.");
+        }
+
         List<Language> languages = createPortfolioTranslationLanguageVMs.stream()
                 .map(vm -> languageRepository.findById(vm.getLanguageId())
                         .orElseThrow(() -> new LanguageNotFoundException(vm.getLanguageId())))

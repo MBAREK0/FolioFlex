@@ -11,6 +11,7 @@ import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.*;
+import org.mbarek0.folioflex.web.exception.skillExs.SkillNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
@@ -94,10 +95,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         workExperience.setLocation(request.getLocation());
         workExperience.setStartDate(request.getStartDate());
         workExperience.setEndDate(request.getEndDate());
-        workExperience.setDescription(request.getDescription());
         workExperience.setDisplayOrder(displayOrder);
-        workExperience.setCreatedAt(LocalDateTime.now());
+        workExperience.setDescription(request.getDescription());
         workExperience.setUpdatedAt(LocalDateTime.now());
+        workExperience.setCreatedAt(LocalDateTime.now());
         workExperience.setArchived(false);
         workExperience.setDeleted(false);
         if (request.getSkills() != null)
@@ -267,11 +268,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
     @Override
     public List<WorkExperience> deleteWorkExperience(UUID uuid) {
+
+        User user = authenticationService.getAuthenticatedUser();
+
         // mark as deleted
         List<WorkExperience> workExperiences = workExperienceRepository.findAllByExperienceIdAndIsDeletedFalse(uuid);
 
         if (workExperiences.isEmpty())
             throw new WorkExperienceNotFoundException("Work experience not found with experience ID: " + uuid);
+
+        if (workExperiences.stream().anyMatch(workExperience -> !workExperience.getUser().equals(user)))
+            throw new SkillNotBelongToUserException("Experience does not belong to user");
 
         workExperiences.forEach(workExperience -> {
             workExperience.setDeleted(true);
