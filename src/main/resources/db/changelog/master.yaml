@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/2025/02/02-01-create-educations-table.yaml
   - include:
       file: db/changelog/2025/02/19-01-create-certifications-table.yaml
+  - include:
+      file: db/changelog/2025/02/27-01-create-skills-table.yaml

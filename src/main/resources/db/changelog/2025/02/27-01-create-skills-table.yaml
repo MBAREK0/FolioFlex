@@ -1,0 +1,113 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1740667061-create-skills-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: skills
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: skill_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: language_code
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: skill_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: icon_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: icon_value
+                  type: text
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: display_order
+                  type: integer
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_archived
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: skills
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_skills_user
+
+        - addForeignKeyConstraint:
+            baseTableName: skills
+            baseColumnNames: language_code
+            referencedTableName: languages
+            referencedColumnNames: code
+            constraintName: fk_skills_language
+
+        - createIndex:
+            tableName: skills
+            indexName: idx_skills_user
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: skills
+            indexName: idx_skills_language
+            columns:
+              - column:
+                  name: language_code
