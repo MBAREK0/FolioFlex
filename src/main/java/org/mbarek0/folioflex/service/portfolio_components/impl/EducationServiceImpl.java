@@ -155,6 +155,7 @@ public class EducationServiceImpl implements EducationService {
 
         return educationRepository.findByUserAndEducationIdAndLanguageAndIsDeletedFalseAndIsArchivedFalse(user, uuid, language)
                 .orElseThrow(() -> new EducationNotFoundException("Education not found with education ID: " + uuid));
+
     }
 
     @Override

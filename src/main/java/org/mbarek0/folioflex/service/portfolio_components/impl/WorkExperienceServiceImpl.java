@@ -38,7 +38,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         Long userLanguageCount = portfolioTranslationLanguageService.findLanguagesCountByUserId(user.getId());
 
-        if (userLanguageCount == 0) throw new UserNotFoundException("User does not have any languages");
+        if (userLanguageCount == 0) throw new UserDontHaveLanguageException("User does not have any languages");
 
         if (userLanguageCount != request.size()) throw new InvalidWorkExperienceDataException("Number of languages in request does not match user's languages");
 

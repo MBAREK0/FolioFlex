@@ -1,0 +1,119 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1740866005-create-contacts-table
+      author: MBAREK0
+      changes:
+        - createTable:
+            tableName: contacts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: contact_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: language_code
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: contact_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: contact_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: contact_value
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: icon_path
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: display_order
+                  type: integer
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_archived
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: contacts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_contacts_user
+
+        - addForeignKeyConstraint:
+            baseTableName: contacts
+            baseColumnNames: language_code
+            referencedTableName: languages
+            referencedColumnNames: code
+            constraintName: fk_contacts_language
+
+        - createIndex:
+            tableName: contacts
+            indexName: idx_contacts_user
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: contacts
+            indexName: idx_contacts_language
+            columns:
+              - column:
+                  name: language_code

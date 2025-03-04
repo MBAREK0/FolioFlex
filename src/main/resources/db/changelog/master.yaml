@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/2025/02/19-01-create-certifications-table.yaml
   - include:
       file: db/changelog/2025/02/27-01-create-skills-table.yaml
+  - include:
+      file: db/changelog/2025/03/01-01-create-contacts-table.yaml

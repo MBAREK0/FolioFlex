@@ -3,6 +3,10 @@ package org.mbarek0.folioflex.web.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import org.mbarek0.folioflex.web.exception.authenticationExs.AuthenticatedUserNotFoundInDatabaseException;
+import org.mbarek0.folioflex.web.exception.contactExs.ContactAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.contactExs.ContactNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.contactExs.ContactNotFoundException;
+import org.mbarek0.folioflex.web.exception.contactExs.InvalidContactDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotFoundException;
@@ -301,6 +305,39 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleSkillNotFoundException(
             SkillNotFoundException ex, WebRequest request) {
         return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle ContactAlreadyExistsException
+    @ExceptionHandler(ContactAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleContactAlreadyExistsException(
+            ContactAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    // handle ContactNotBelongToUserException
+    @ExceptionHandler(ContactNotBelongToUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleContactNotBelongToUserException(
+            ContactNotBelongToUserException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // handle ContactNotFoundException
+    @ExceptionHandler(ContactNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Map<String, Object>> handleContactNotFoundException(
+            ContactNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+
+    // handle InvalidContactDataException
+    @ExceptionHandler(InvalidContactDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, Object>> handleInvalidContactDataException(
+            InvalidContactDataException ex, WebRequest request) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 
     /** --------------------------------------- Global Exceptions  */
