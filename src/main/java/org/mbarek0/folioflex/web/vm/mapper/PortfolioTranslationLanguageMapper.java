@@ -1,6 +1,6 @@
 package org.mbarek0.folioflex.web.vm.mapper;
 
-import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
+import org.mbarek0.folioflex.model.language.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.web.vm.response.translation.PortfolioTranslationLanguageResponseVM;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

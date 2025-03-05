@@ -2,7 +2,7 @@ package org.mbarek0.folioflex.service.portfolio_components.impl;
 
 
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.Skill;
 import org.mbarek0.folioflex.repository.SkillRepository;
@@ -10,10 +10,10 @@ import org.mbarek0.folioflex.service.authentication.AuthenticationService;
 import org.mbarek0.folioflex.service.portfolio_components.SkillService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
-import org.mbarek0.folioflex.web.exception.skillExs.InvalidSkillDataException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillAlreadyExistsException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillNotBelongToUserException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.InvalidSkillDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.SkillRequestVM;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;

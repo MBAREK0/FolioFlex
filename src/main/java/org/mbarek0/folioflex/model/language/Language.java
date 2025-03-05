@@ -1,4 +1,4 @@
-package org.mbarek0.folioflex.model;
+package org.mbarek0.folioflex.model.language;
 
 import jakarta.persistence.*;
 import lombok.*;

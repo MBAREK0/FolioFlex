@@ -1,7 +1,7 @@
 package org.mbarek0.folioflex.service.portfolio_components.impl;
 
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.PersonalInformation;
 import org.mbarek0.folioflex.repository.PersonalInformationRepository;

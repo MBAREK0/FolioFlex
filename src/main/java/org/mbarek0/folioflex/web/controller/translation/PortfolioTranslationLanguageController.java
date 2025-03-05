@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.web.vm.mapper.PortfolioTranslationLanguageMapper;
 import org.mbarek0.folioflex.web.vm.request.translation.PortfolioTranslationLanguageRequestVM;

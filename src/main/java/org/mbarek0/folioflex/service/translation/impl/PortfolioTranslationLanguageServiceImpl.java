@@ -1,8 +1,8 @@
 package org.mbarek0.folioflex.service.translation.impl;
 
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
-import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
+import org.mbarek0.folioflex.model.language.Language;
+import org.mbarek0.folioflex.model.language.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.repository.LanguageRepository;
 import org.mbarek0.folioflex.repository.PortfolioTranslationLanguageRepository;

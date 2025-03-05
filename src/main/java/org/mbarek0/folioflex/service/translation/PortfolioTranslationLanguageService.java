@@ -1,7 +1,7 @@
 package org.mbarek0.folioflex.service.translation;
 
-import org.mbarek0.folioflex.model.Language;
-import org.mbarek0.folioflex.model.PortfolioTranslationLanguage;
+import org.mbarek0.folioflex.model.language.Language;
+import org.mbarek0.folioflex.model.language.PortfolioTranslationLanguage;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.web.exception.InvalidInputException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;

@@ -1,6 +1,6 @@
 package org.mbarek0.folioflex.repository;
 
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

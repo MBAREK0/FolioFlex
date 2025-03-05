@@ -1,6 +1,6 @@
 package org.mbarek0.folioflex.repository;
 
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.Education;
 import org.springframework.data.jpa.repository.JpaRepository;

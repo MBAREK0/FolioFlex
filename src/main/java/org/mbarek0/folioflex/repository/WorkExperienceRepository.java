@@ -1,11 +1,8 @@
 package org.mbarek0.folioflex.repository;
 
-import jakarta.validation.constraints.NotNull;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
 import org.mbarek0.folioflex.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

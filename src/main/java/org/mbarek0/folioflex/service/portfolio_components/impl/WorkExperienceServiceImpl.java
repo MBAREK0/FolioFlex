@@ -1,7 +1,7 @@
 package org.mbarek0.folioflex.service.portfolio_components.impl;
 
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.WorkExperience;
 import org.mbarek0.folioflex.repository.WorkExperienceRepository;
@@ -11,9 +11,8 @@ import org.mbarek0.folioflex.service.portfolio_components.WorkExperienceService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.*;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
-import org.mbarek0.folioflex.web.exception.userExs.UserNotFoundException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.WorkExperienceRequestVM;
 import org.springframework.stereotype.Service;

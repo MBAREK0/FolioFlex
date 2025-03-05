@@ -1,8 +1,6 @@
 package org.mbarek0.folioflex.repository;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;

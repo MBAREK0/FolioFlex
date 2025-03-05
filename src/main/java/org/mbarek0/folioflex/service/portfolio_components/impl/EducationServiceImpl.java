@@ -1,7 +1,7 @@
 package org.mbarek0.folioflex.service.portfolio_components.impl;
 
 import lombok.AllArgsConstructor;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 import org.mbarek0.folioflex.model.portfolio_components.Education;
 import org.mbarek0.folioflex.repository.EducationRepository;
@@ -11,7 +11,6 @@ import org.mbarek0.folioflex.service.portfolio_components.EducationService;
 import org.mbarek0.folioflex.service.translation.PortfolioTranslationLanguageService;
 import org.mbarek0.folioflex.service.user.UserService;
 import org.mbarek0.folioflex.web.exception.portfolioExs.educationExs.*;
-import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.InvalidWorkExperienceDataException;
 import org.mbarek0.folioflex.web.exception.translationExs.UserDontHaveLanguageException;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.EducationRequestVM;
 import org.mbarek0.folioflex.web.vm.request.portfolio_components.ReorderRequest;

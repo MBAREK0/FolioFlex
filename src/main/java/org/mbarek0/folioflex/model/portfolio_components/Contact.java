@@ -2,7 +2,7 @@ package org.mbarek0.folioflex.model.portfolio_components;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.mbarek0.folioflex.model.Language;
+import org.mbarek0.folioflex.model.language.Language;
 import org.mbarek0.folioflex.model.User;
 
 import java.time.LocalDateTime;

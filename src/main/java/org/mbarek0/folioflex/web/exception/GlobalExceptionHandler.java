@@ -3,10 +3,10 @@ package org.mbarek0.folioflex.web.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import org.mbarek0.folioflex.web.exception.authenticationExs.AuthenticatedUserNotFoundInDatabaseException;
-import org.mbarek0.folioflex.web.exception.contactExs.ContactAlreadyExistsException;
-import org.mbarek0.folioflex.web.exception.contactExs.ContactNotBelongToUserException;
-import org.mbarek0.folioflex.web.exception.contactExs.ContactNotFoundException;
-import org.mbarek0.folioflex.web.exception.contactExs.InvalidContactDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.contactExs.ContactAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.contactExs.ContactNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.contactExs.ContactNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.contactExs.InvalidContactDataException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.certificationExs.CertificationNotFoundException;
@@ -22,10 +22,10 @@ import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.Inval
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceAlreadyExistsException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotBelongToUserException;
 import org.mbarek0.folioflex.web.exception.portfolioExs.work_experienceExs.WorkExperienceNotFoundException;
-import org.mbarek0.folioflex.web.exception.skillExs.InvalidSkillDataException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillAlreadyExistsException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillNotBelongToUserException;
-import org.mbarek0.folioflex.web.exception.skillExs.SkillNotFoundException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.InvalidSkillDataException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillAlreadyExistsException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillNotBelongToUserException;
+import org.mbarek0.folioflex.web.exception.portfolioExs.skillExs.SkillNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.EnglishLanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.LanguageNotFoundException;
 import org.mbarek0.folioflex.web.exception.translationExs.PortfolioTranslationLanguageAlreadyExistsException;
@@ -406,4 +406,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(responseBody);
     }
+
+
 }
